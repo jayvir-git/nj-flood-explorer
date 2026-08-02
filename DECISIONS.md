@@ -31,3 +31,12 @@ People identify with their town, and NJ hazard planning happens at municipal
 level. Block groups are the unit of the EJ data and appear in the detail, but the
 question the app answers is asked town by town. Rejected: address-level lookup
 (out of scope; FUTURE.md).
+
+## D5. MapView created once, destroyed on a deferred cleanup
+React StrictMode runs an effect's cleanup and then re-runs the effect on mount.
+Destroying the MapView synchronously in cleanup aborted the basemap request in
+flight and logged an ArcGIS error on every dev page load. The view is now held in
+a ref, created once, and destroyed on a timer that the remount cancels. Rejected:
+dropping StrictMode (the rest of the app keeps the benefit of its checks), and
+tolerating the error (a permanent red herring in the console would hide real
+layer-load failures in later slices).
