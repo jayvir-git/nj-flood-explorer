@@ -1,0 +1,42 @@
+---
+description: Project conventions and scope boundaries for NJ Flood Exposure Explorer
+alwaysApply: true
+---
+
+# NJ Flood Exposure Explorer: working rules
+
+## What this is
+A small, focused web app answering one question: "How flood-exposed is my NJ town,
+and who bears it?" Interactive map (FEMA flood zones over NJDEP overburdened
+communities), click a municipality to get a plain-language summary with one chart
+and one table. Nothing else.
+
+## Scope discipline (the most important rule)
+- The scope is defined by docs/PLAN.md. Build the current slice only.
+- Any feature idea outside the current slice goes into FUTURE.md, never into code.
+- Do not add libraries, abstractions, config options, or "while we're here"
+  improvements that the current slice does not need.
+
+## Data rules
+- The ONLY data sources are the three services in src/config/sources.ts. Their URLs
+  and field names were manually verified in a browser. NEVER invent, guess, or
+  substitute service URLs, layer IDs, or field names; if something seems wrong,
+  stop and say so instead of improvising.
+- Every user-facing number must be traceable to a source; the UI links sources.
+- Legal definitions (e.g. "overburdened community", N.J.S.A. 13:1D-157) are quoted
+  from NJDEP, never paraphrased into new thresholds.
+
+## Code conventions
+- React function components, TypeScript strict, no class components.
+- ArcGIS Maps SDK (@arcgis/core) for all mapping; Recharts for the chart.
+- Small files, plain names. No premature abstraction: duplicate twice before
+  extracting a helper.
+- Comments only for constraints the code cannot express (projection quirks,
+  service record limits). No narrative comments.
+
+## Process
+- One slice per session; each slice ends with the acceptance criterion from
+  docs/PLAN.md verified in the running app, then a commit.
+- Commit messages: short imperative summary of what changed, nothing else.
+- Record every non-obvious choice in DECISIONS.md at the moment it is made
+  (what was chosen, what was rejected, why).
