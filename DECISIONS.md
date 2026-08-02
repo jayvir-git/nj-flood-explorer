@@ -73,3 +73,24 @@ the flood zones on top of it. FEMA draws the 1% annual chance zone in cyan, so
 cyan and blue are withheld from the EJ palette, which uses six qualitative hues
 for the six values of OVERBURDENED_COMMUNITY_CRITERI at 45% opacity. The hue
 assignment is stable but not yet meaningful; refining it is P1's job.
+
+## D9. "No flood zone drawn" is split into three different sentences
+Chasing why Atlantic City showed no flood zones turned up a hole in the data. Four
+points on AC land (boardwalk, marina district, inlet, Ventnor border) and 21 points
+sampled across the municipal polygon all return zero features from layer 28 with no
+filter at all: not Zone X, nothing. Margate City, one municipality away, returns
+Zone VE from panel 34001C on the identical query, so this is FEMA's coverage and not
+our projection or our filter. Eleven other towns sampled all return a polygon.
+
+So a blank flood layer means one of four things, and the difference matters more
+here than almost anywhere else in the app: Atlantic City is one of the most
+flood-exposed cities in the state, and "no flood zones shown" would read as
+reassurance. The status line therefore separates zoomed past the scale limit, FEMA
+mapping this ground and placing it outside the Special Flood Hazard Area, FEMA
+publishing nothing for this ground, and the service failing. Distinguishing the
+middle two costs a second count query with the SFHA filter dropped, and only when
+the first count comes back zero.
+
+Rejected: reporting Atlantic City as 0% flood-exposed, which is what a naive count
+would produce and is the most dangerous wrong answer this app could give. S6 and S7
+carry the consequence.

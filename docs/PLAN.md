@@ -22,10 +22,12 @@ readable over the EJ fill at zoom 15 over ground FEMA maps as a flood zone.
 
 **S3. Layer toggles + legend.**
 Checkbox per layer; ArcGIS Legend widget or a simple custom legend. Also a status
-cue for the flood layer, which draws nothing above 1:36,112: "zoomed too far out",
-"no flood zone mapped here" and "layer broken" are currently one blank screen.
+cue for the flood layer, whose blank screen has four different meanings: zoomed
+past 1:36,112, FEMA mapped this ground and put it outside the hazard area, FEMA
+has not mapped this ground at all (Atlantic City, DECISIONS.md D9), and the layer
+is broken.
 Accept: each layer can be turned on/off; legend matches visible layers; the flood
-layer's blank state says which of the three it is.
+layer's blank state says which of the four it is.
 
 **S4. Deploy.**
 Vercel deployment from the repo.
@@ -43,13 +45,16 @@ On selection, query the EJ layer for block groups intersecting the municipality;
 query flood zones intersecting those block groups. Side panel shows: plain-language
 summary sentence, one chart (block groups by EJ criterion, flooded vs not), one
 table (counts and percentages).
+A municipality FEMA has not mapped must never be summarised as unexposed; absence
+of NFHL data is not a finding about flood risk (DECISIONS.md D9).
 Accept: numbers for 2 hand-checked towns (one coastal, one inland) match manual
-queries against the same services.
+queries against the same services, and Atlantic City reports missing data rather
+than zero exposure.
 
 **S7. About the data.**
 In-app section: the three sources with links, NJDEP's quoted definition of
-overburdened community, data limitations (NFHL currency, block-group resolution,
-planimetric boundaries).
+overburdened community, data limitations (NFHL currency and coverage gaps,
+block-group resolution, planimetric boundaries).
 Accept: every number in the panel is one click from its source.
 
 ## Phase 3: improvement passes (only after S1-S7 all pass)
