@@ -9,6 +9,8 @@ gives a plain-language exposure summary with a chart and a table.
 
 <!--
 TODO(jayvir): write this README yourself before the repo goes public-public.
+Facts, numbers and limitations are collected in docs/README-notes.md so this is
+composition, not archaeology.
 Sections to write in your own words:
 - What it shows and who it's for
 - The data: three sources, what each is, link each (see src/config/sources.ts
