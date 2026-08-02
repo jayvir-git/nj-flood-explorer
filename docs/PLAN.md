@@ -15,12 +15,17 @@ Accept: `npm run dev` shows the map, no console errors.
 Municipal boundaries (outline only), NJDEP overburdened communities (categorical
 fill by OVERBURDENED_COMMUNITY_CRITERI, semi-transparent), FEMA flood hazard zones
 (layer 28, filtered to Special Flood Hazard Area zones, semi-transparent).
-Accept: all three visible together at state and town zoom; flood zones readable
-over the EJ fill.
+FEMA publishes layer 28 with a 1:36,112 scale limit, so flood zones cannot be drawn
+at state zoom, nor at the zoom where a whole municipality fits (DECISIONS.md D6).
+Accept: boundaries and the EJ fill visible together at every zoom; flood zones
+readable over the EJ fill at zoom 15 over ground FEMA maps as a flood zone.
 
 **S3. Layer toggles + legend.**
-Checkbox per layer; ArcGIS Legend widget or a simple custom legend.
-Accept: each layer can be turned on/off; legend matches visible layers.
+Checkbox per layer; ArcGIS Legend widget or a simple custom legend. Also a status
+cue for the flood layer, which draws nothing above 1:36,112: "zoomed too far out",
+"no flood zone mapped here" and "layer broken" are currently one blank screen.
+Accept: each layer can be turned on/off; legend matches visible layers; the flood
+layer's blank state says which of the three it is.
 
 **S4. Deploy.**
 Vercel deployment from the repo.

@@ -11,6 +11,8 @@ export const SOURCES = {
     fields: {
       zone: "FLD_ZONE",
       subtype: "ZONE_SUBTY",
+      /** FEMA's own Special Flood Hazard Area flag, "T" or "F". */
+      sfha: "SFHA_TF",
     },
   },
   /** NJDEP Overburdened Communities under the NJ EJ Law (N.J.S.A. 13:1D-157). Census block groups. */

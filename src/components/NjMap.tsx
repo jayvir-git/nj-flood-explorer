@@ -2,6 +2,11 @@ import { useEffect, useRef } from 'react'
 import EsriMap from '@arcgis/core/Map.js'
 import MapView from '@arcgis/core/views/MapView.js'
 import '@arcgis/core/assets/esri/themes/light/main.css'
+import {
+  createFloodZoneLayer,
+  createMunicipalityLayer,
+  createOverburdenedLayer,
+} from '../layers'
 
 const NJ_CENTER: [number, number] = [-74.55, 40.07]
 const NJ_ZOOM = 8
@@ -18,7 +23,14 @@ export function NjMap() {
     window.clearTimeout(destroyTimer.current)
     viewRef.current ??= new MapView({
       container,
-      map: new EsriMap({ basemap: 'gray-vector' }),
+      map: new EsriMap({
+        basemap: 'gray-vector',
+        layers: [
+          createOverburdenedLayer(),
+          createFloodZoneLayer(),
+          createMunicipalityLayer(),
+        ],
+      }),
       center: NJ_CENTER,
       zoom: NJ_ZOOM,
     })
