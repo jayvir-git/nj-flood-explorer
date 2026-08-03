@@ -110,3 +110,18 @@ window, the app stores nothing, and the only two bundled chunks that reach for
 localStorage (IdentityManager, and video.js inside VideoLayer) both wrap it in
 try/catch and neither loads here. Noted so the same console line does not get
 investigated twice.
+
+## D11. A click on a shared boundary takes the service's first result
+Municipalities share edges, so a click landing exactly on one intersects two of them
+and the service returns both. Nothing in the click favours either: the point is
+equally inside each, and a cursor carries no sub-pixel intent. The first returned
+feature is taken. Rejected: querying with "contains" instead, since a boundary point
+is contained by neither and the click would clear the selection, which reads as a
+bug; and prompting the reader to choose, which is a lot of interface for a case
+measured in fractions of a pixel. The case is rare enough at floating-point
+precision that it may never occur in practice. It is written down because the
+alternative is code that silently assumes exactly one result.
+
+The selected geometry is stored exactly as returned, unsimplified. S6 uses it as the
+spatial filter for its own queries, and a smoothed outline would quietly change
+which block groups and flood zones count as intersecting it.

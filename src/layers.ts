@@ -1,4 +1,5 @@
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer.js'
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer.js'
 import MapImageLayer from '@arcgis/core/layers/MapImageLayer.js'
 import Sublayer from '@arcgis/core/layers/support/Sublayer.js'
 import SimpleRenderer from '@arcgis/core/renderers/SimpleRenderer.js'
@@ -65,6 +66,23 @@ export function createFloodZoneLayer() {
       }),
     ],
   })
+}
+
+// White beneath near-black: the selected outline has to read over the EJ fill, the
+// flood zones and the basemap without taking a hue from any of them.
+export const SELECTION_SYMBOLS = [
+  new SimpleFillSymbol({
+    color: [0, 0, 0, 0],
+    outline: new SimpleLineSymbol({ color: '#ffffff', width: 5 }),
+  }),
+  new SimpleFillSymbol({
+    color: [0, 0, 0, 0],
+    outline: new SimpleLineSymbol({ color: '#111111', width: 2 }),
+  }),
+]
+
+export function createSelectionLayer() {
+  return new GraphicsLayer({ title: 'Selected municipality', listMode: 'hide' })
 }
 
 export function createMunicipalityLayer() {

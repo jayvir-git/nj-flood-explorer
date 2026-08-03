@@ -1,16 +1,22 @@
 import { useEffect, useRef, useState } from 'react'
 import EsriMap from '@arcgis/core/Map.js'
+import Graphic from '@arcgis/core/Graphic.js'
 import MapView from '@arcgis/core/views/MapView.js'
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils.js'
+import type Point from '@arcgis/core/geometry/Point.js'
+import type Polygon from '@arcgis/core/geometry/Polygon.js'
 import '@arcgis/core/assets/esri/themes/light/main.css'
 import { SOURCES } from '../config/sources'
 import {
   FLOOD_MIN_SCALE,
+  SELECTION_SYMBOLS,
   createFloodZoneLayer,
   createMunicipalityLayer,
   createOverburdenedLayer,
+  createSelectionLayer,
 } from '../layers'
 import { LayerPanel } from './LayerPanel'
+import { TownPanel } from './TownPanel'
 
 const NJ_CENTER: [number, number] = [-74.55, 40.07]
 const NJ_ZOOM = 8
@@ -24,10 +30,18 @@ export type FloodStatus =
   | 'unmapped'
   | 'error'
 
+/** The selected municipality's geometry is kept as returned; S6 queries against it. */
+export type SelectionState =
+  | { kind: 'idle' }
+  | { kind: 'pending' }
+  | { kind: 'selected'; name: string; county: string; geometry: Polygon }
+  | { kind: 'error' }
+
 type Layers = {
   flood: ReturnType<typeof createFloodZoneLayer>
   ej: ReturnType<typeof createOverburdenedLayer>
   muni: ReturnType<typeof createMunicipalityLayer>
+  selection: ReturnType<typeof createSelectionLayer>
 }
 
 export function NjMap() {
@@ -42,6 +56,7 @@ export function NjMap() {
     muni: true,
   })
   const [floodStatus, setFloodStatus] = useState<FloodStatus>('checking')
+  const [selection, setSelection] = useState<SelectionState>({ kind: 'idle' })
 
   useEffect(() => {
     const container = containerRef.current
@@ -56,12 +71,13 @@ export function NjMap() {
         ej: createOverburdenedLayer(),
         flood: createFloodZoneLayer(),
         muni: createMunicipalityLayer(),
+        selection: createSelectionLayer(),
       }
       view = new MapView({
         container,
         map: new EsriMap({
           basemap: 'gray-vector',
-          layers: [layers.ej, layers.flood, layers.muni],
+          layers: [layers.ej, layers.flood, layers.muni, layers.selection],
         }),
         center: NJ_CENTER,
         zoom: NJ_ZOOM,
@@ -72,7 +88,48 @@ export function NjMap() {
 
     const settledView = view
     const flood = layers.flood
+    const municipalities = layers.muni
+    const highlight = layers.selection
     let latest = 0
+    let latestClick = 0
+
+    async function selectMunicipalityAt(point: Point) {
+      const token = ++latestClick
+      setSelection({ kind: 'pending' })
+      try {
+        const { features } = await municipalities.queryFeatures({
+          geometry: point,
+          spatialRelationship: 'intersects',
+          returnGeometry: true,
+          outFields: [
+            SOURCES.njMunicipalities.fields.name,
+            SOURCES.njMunicipalities.fields.county,
+          ],
+          outSpatialReference: settledView.spatialReference,
+        })
+        if (token !== latestClick) return
+        highlight.removeAll()
+        // A click on a shared boundary intersects both municipalities, and nothing
+        // in the click favours either, so the service's first result wins (D11).
+        const feature = features[0]
+        if (!feature) {
+          setSelection({ kind: 'idle' })
+          return
+        }
+        const geometry = feature.geometry as Polygon
+        highlight.addMany(SELECTION_SYMBOLS.map((symbol) => new Graphic({ geometry, symbol })))
+        setSelection({
+          kind: 'selected',
+          name: feature.attributes[SOURCES.njMunicipalities.fields.name],
+          county: feature.attributes[SOURCES.njMunicipalities.fields.county],
+          geometry,
+        })
+      } catch {
+        if (token !== latestClick) return
+        highlight.removeAll()
+        setSelection({ kind: 'error' })
+      }
+    }
 
     async function describeFloodLayer() {
       const token = ++latest
@@ -115,8 +172,13 @@ export function NjMap() {
       { initial: true },
     )
 
+    const clickHandle = settledView.on('click', (event) => {
+      void selectMunicipalityAt(event.mapPoint)
+    })
+
     return () => {
       handle.remove()
+      clickHandle.remove()
       // StrictMode remounts immediately after cleanup; destroying the view here
       // aborts the basemap request in flight, so defer past a possible remount.
       destroyTimer.current = window.setTimeout(() => {
@@ -137,12 +199,15 @@ export function NjMap() {
 
   return (
     <div className="map-shell">
-      <div className="map" ref={containerRef} />
-      <LayerPanel
-        visibility={visibility}
-        onToggle={(key) => setVisibility((current) => ({ ...current, [key]: !current[key] }))}
-        floodStatus={floodStatus}
-      />
+      <TownPanel selection={selection} />
+      <div className="map-area">
+        <div className="map" ref={containerRef} />
+        <LayerPanel
+          visibility={visibility}
+          onToggle={(key) => setVisibility((current) => ({ ...current, [key]: !current[key] }))}
+          floodStatus={floodStatus}
+        />
+      </div>
     </div>
   )
 }

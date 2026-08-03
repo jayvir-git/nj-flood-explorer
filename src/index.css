@@ -11,8 +11,41 @@ body,
 }
 
 .map-shell {
-  position: relative;
+  display: flex;
   height: 100%;
+}
+
+.town-panel {
+  flex: none;
+  width: 340px;
+  padding: 18px 20px;
+  overflow-y: auto;
+  background: #fff;
+  border-right: 1px solid #d5d5d5;
+  font-size: 14px;
+  color: #222;
+}
+
+.town-prompt {
+  margin: 0;
+  color: #5c5c5c;
+}
+
+.town-name {
+  margin: 0 0 2px;
+  font-size: 21px;
+  line-height: 1.2;
+}
+
+.town-county {
+  margin: 0;
+  color: #5c5c5c;
+}
+
+.map-area {
+  position: relative;
+  flex: 1;
+  min-width: 0;
 }
 
 .map {
@@ -91,7 +124,7 @@ body,
   margin: 0;
 }
 
-.status.warning {
+.warning {
   color: #8a3200;
   font-weight: 600;
 }
