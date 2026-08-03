@@ -100,6 +100,89 @@ body,
   color: #5c5c5c;
 }
 
+.town-about {
+  margin: 18px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid #ececec;
+  font-size: 12px;
+}
+
+.text-button {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #0b5cab;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.about h2 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.25;
+}
+
+.about h3 {
+  margin: 16px 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #5c5c5c;
+}
+
+.about p,
+.about li {
+  margin: 0 0 8px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.about-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.about-close {
+  flex: none;
+  margin: 0;
+  padding: 2px 8px;
+  border: 1px solid #d5d5d5;
+  border-radius: 4px;
+  background: #fff;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.about-sources,
+.about-limits {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.about blockquote {
+  margin: 0 0 6px;
+  padding: 8px 10px;
+  border-left: 3px solid #d5d5d5;
+  background: #f7f7f7;
+}
+
+.about blockquote p {
+  margin: 0;
+}
+
+.about-cite {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: #5c5c5c;
+}
+
 .map-area {
   position: relative;
   flex: 1;

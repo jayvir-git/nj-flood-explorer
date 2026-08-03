@@ -1,3 +1,4 @@
+import { AboutData } from './AboutData'
 import { ExposureSummary } from './ExposureSummary'
 import type { ExposureState, SelectionState } from './NjMap'
 
@@ -9,9 +10,26 @@ function titleCase(value: string) {
 type Props = {
   selection: SelectionState
   exposure: ExposureState
+  aboutOpen: boolean
+  onOpenAbout: () => void
+  onCloseAbout: () => void
 }
 
-export function TownPanel({ selection, exposure }: Props) {
+export function TownPanel({
+  selection,
+  exposure,
+  aboutOpen,
+  onOpenAbout,
+  onCloseAbout,
+}: Props) {
+  if (aboutOpen) {
+    return (
+      <aside className="town-panel">
+        <AboutData onClose={onCloseAbout} />
+      </aside>
+    )
+  }
+
   return (
     <aside className="town-panel" aria-live="polite">
       {selection.kind === 'idle' && (
@@ -37,10 +55,19 @@ export function TownPanel({ selection, exposure }: Props) {
             </p>
           )}
           {exposure.kind === 'ready' && (
-            <ExposureSummary town={selection.name} exposure={exposure.result} />
+            <ExposureSummary
+              town={selection.name}
+              exposure={exposure.result}
+              onOpenAbout={onOpenAbout}
+            />
           )}
         </>
       )}
+      <p className="town-about">
+        <button type="button" className="text-button" onClick={onOpenAbout}>
+          About the data
+        </button>
+      </p>
     </aside>
   )
 }

@@ -47,7 +47,13 @@ function WrappedTick({ x = 0, y = 0, payload }: TickProps) {
   )
 }
 
-export function ExposureSummary({ town, exposure }: { town: string; exposure: ExposureResult }) {
+type Props = {
+  town: string
+  exposure: ExposureResult
+  onOpenAbout: () => void
+}
+
+export function ExposureSummary({ town, exposure, onOpenAbout }: Props) {
   if (exposure.kind === 'no-overburdened') {
     return (
       <section className="exposure">
@@ -55,7 +61,7 @@ export function ExposureSummary({ town, exposure }: { town: string; exposure: Ex
           NJDEP designates no overburdened communities intersecting {town}, so this app has
           nothing to report for it.
         </p>
-        <Sources />
+        <Sources onOpenAbout={onOpenAbout} />
       </section>
     )
   }
@@ -72,7 +78,7 @@ export function ExposureSummary({ town, exposure }: { town: string; exposure: Ex
           No exposure figure can be derived. A blank flood map is not a finding that the
           area is unexposed.
         </p>
-        <Sources />
+        <Sources onOpenAbout={onOpenAbout} />
       </section>
     )
   }
@@ -153,7 +159,7 @@ export function ExposureSummary({ town, exposure }: { town: string; exposure: Ex
         </tbody>
       </table>
 
-      <Sources />
+      <Sources onOpenAbout={onOpenAbout} />
     </section>
   )
 }
@@ -178,7 +184,7 @@ function Row({ tally, showUnmapped }: { tally: CriterionTally; showUnmapped: boo
   )
 }
 
-function Sources() {
+function Sources({ onOpenAbout }: { onOpenAbout: () => void }) {
   return (
     <p className="exposure-sources">
       Sources:{' '}
@@ -193,7 +199,10 @@ function Sources() {
       <a href={SOURCES.njMunicipalities.url} target="_blank" rel="noreferrer">
         NJOGIS municipal boundaries
       </a>
-      .
+      .{' '}
+      <button type="button" className="text-button" onClick={onOpenAbout}>
+        About the data
+      </button>
     </p>
   )
 }

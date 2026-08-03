@@ -230,3 +230,14 @@ Atlantic City. The cost is volume, and it is not hypothetical. Princeton's exten
 returns 1,419 flood polygons against a 2,000-record cap, so a larger town will page,
 which is why queryAll honours exceededTransferLimit rather than trusting one round
 trip.
+
+## D15. Overburdened-community definition quoted from the Legislature chapter text
+The About section quotes the definition of "overburdened community" from
+P.L. 2020, c. 92, §2 (N.J.S.A. 13:1D-158), retrieved from
+https://www.njleg.state.nj.us/2020/Bills/PL20/92_.HTM. Rejected: typing the thresholds
+from memory, and citing dep.nj.gov/ej as the quote's source when that origin and
+NJDEP's hosted ej-law.pdf returned only Incapsula/bot-challenge HTML from this
+environment. The definition lives in 13:1D-158 (definitions), not 13:1D-157
+(findings); the About section names both the chapter URL and the correct section
+cite. The live NJDEP service and info URLs in sources.ts remain the links for the
+layer itself.

@@ -65,6 +65,7 @@ export function NjMap() {
   const [floodStatus, setFloodStatus] = useState<FloodStatus>('checking')
   const [selection, setSelection] = useState<SelectionState>({ kind: 'idle' })
   const [exposure, setExposure] = useState<ExposureState>({ kind: 'idle' })
+  const [aboutOpen, setAboutOpen] = useState(false)
 
   useEffect(() => {
     const container = containerRef.current
@@ -224,7 +225,13 @@ export function NjMap() {
 
   return (
     <div className="map-shell">
-      <TownPanel selection={selection} exposure={exposure} />
+      <TownPanel
+        selection={selection}
+        exposure={exposure}
+        aboutOpen={aboutOpen}
+        onOpenAbout={() => setAboutOpen(true)}
+        onCloseAbout={() => setAboutOpen(false)}
+      />
       <div className="map-area">
         <div className="map" ref={containerRef} />
         <LayerPanel
