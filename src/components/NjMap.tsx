@@ -7,6 +7,7 @@ import type Point from '@arcgis/core/geometry/Point.js'
 import type Polygon from '@arcgis/core/geometry/Polygon.js'
 import '@arcgis/core/assets/esri/themes/light/main.css'
 import { SOURCES } from '../config/sources'
+import { analyzeExposure, type ExposureResult } from '../exposure'
 import {
   FLOOD_MIN_SCALE,
   SELECTION_SYMBOLS,
@@ -37,6 +38,12 @@ export type SelectionState =
   | { kind: 'selected'; name: string; county: string; geometry: Polygon }
   | { kind: 'error' }
 
+export type ExposureState =
+  | { kind: 'idle' }
+  | { kind: 'pending' }
+  | { kind: 'ready'; result: ExposureResult }
+  | { kind: 'error' }
+
 type Layers = {
   flood: ReturnType<typeof createFloodZoneLayer>
   ej: ReturnType<typeof createOverburdenedLayer>
@@ -57,6 +64,7 @@ export function NjMap() {
   })
   const [floodStatus, setFloodStatus] = useState<FloodStatus>('checking')
   const [selection, setSelection] = useState<SelectionState>({ kind: 'idle' })
+  const [exposure, setExposure] = useState<ExposureState>({ kind: 'idle' })
 
   useEffect(() => {
     const container = containerRef.current
@@ -89,6 +97,7 @@ export function NjMap() {
     const settledView = view
     const flood = layers.flood
     const municipalities = layers.muni
+    const overburdened = layers.ej
     const highlight = layers.selection
     let latest = 0
     let latestClick = 0
@@ -96,6 +105,9 @@ export function NjMap() {
     async function selectMunicipalityAt(point: Point) {
       const token = ++latestClick
       setSelection({ kind: 'pending' })
+      setExposure({ kind: 'idle' })
+
+      let feature
       try {
         const { features } = await municipalities.queryFeatures({
           geometry: point,
@@ -108,26 +120,39 @@ export function NjMap() {
           outSpatialReference: settledView.spatialReference,
         })
         if (token !== latestClick) return
-        highlight.removeAll()
         // A click on a shared boundary intersects both municipalities, and nothing
         // in the click favours either, so the service's first result wins (D11).
-        const feature = features[0]
-        if (!feature) {
-          setSelection({ kind: 'idle' })
-          return
-        }
-        const geometry = feature.geometry as Polygon
-        highlight.addMany(SELECTION_SYMBOLS.map((symbol) => new Graphic({ geometry, symbol })))
-        setSelection({
-          kind: 'selected',
-          name: feature.attributes[SOURCES.njMunicipalities.fields.name],
-          county: feature.attributes[SOURCES.njMunicipalities.fields.county],
-          geometry,
-        })
+        feature = features[0]
       } catch {
         if (token !== latestClick) return
         highlight.removeAll()
         setSelection({ kind: 'error' })
+        return
+      }
+
+      highlight.removeAll()
+      if (!feature) {
+        setSelection({ kind: 'idle' })
+        return
+      }
+
+      const geometry = feature.geometry as Polygon
+      highlight.addMany(SELECTION_SYMBOLS.map((symbol) => new Graphic({ geometry, symbol })))
+      setSelection({
+        kind: 'selected',
+        name: feature.attributes[SOURCES.njMunicipalities.fields.name],
+        county: feature.attributes[SOURCES.njMunicipalities.fields.county],
+        geometry,
+      })
+
+      setExposure({ kind: 'pending' })
+      try {
+        const sublayer = flood.findSublayerById(SOURCES.femaNfhl.floodHazardZonesLayerId)
+        if (!sublayer) throw new Error('flood sublayer missing')
+        const result = await analyzeExposure(geometry, overburdened, sublayer)
+        if (token === latestClick) setExposure({ kind: 'ready', result })
+      } catch {
+        if (token === latestClick) setExposure({ kind: 'error' })
       }
     }
 
@@ -199,7 +224,7 @@ export function NjMap() {
 
   return (
     <div className="map-shell">
-      <TownPanel selection={selection} />
+      <TownPanel selection={selection} exposure={exposure} />
       <div className="map-area">
         <div className="map" ref={containerRef} />
         <LayerPanel

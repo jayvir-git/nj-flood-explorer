@@ -17,7 +17,7 @@ body,
 
 .town-panel {
   flex: none;
-  width: 340px;
+  width: 400px;
   padding: 18px 20px;
   overflow-y: auto;
   background: #fff;
@@ -39,6 +39,64 @@ body,
 
 .town-county {
   margin: 0;
+  color: #5c5c5c;
+}
+
+.exposure {
+  margin-top: 14px;
+}
+
+.exposure-summary {
+  margin: 0 0 10px;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.exposure-note {
+  margin: 0 0 10px;
+  color: #5c5c5c;
+}
+
+.exposure-table {
+  width: 100%;
+  margin-top: 10px;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.exposure-table th,
+.exposure-table td {
+  padding: 5px 6px;
+  border-bottom: 1px solid #ececec;
+  text-align: left;
+  vertical-align: top;
+}
+
+.exposure-table thead th {
+  font-size: 11px;
+  color: #5c5c5c;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.exposure-table td {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.exposure-table tbody th {
+  font-weight: 400;
+}
+
+.exposure-total th,
+.exposure-total td {
+  font-weight: 600;
+  border-bottom: none;
+}
+
+.exposure-sources {
+  margin: 12px 0 0;
+  font-size: 11px;
   color: #5c5c5c;
 }
 

@@ -46,15 +46,20 @@ query flood zones intersecting those block groups. Side panel shows: plain-langu
 summary sentence, one chart (block groups by EJ criterion, flooded vs not), one
 table (counts and percentages).
 A municipality FEMA has not mapped must never be summarised as unexposed; absence
-of NFHL data is not a finding about flood risk (DECISIONS.md D9).
+of NFHL data is not a finding about flood risk (DECISIONS.md D9). Coverage is
+judged per block group, not per municipality (DECISIONS.md D12).
 Accept: numbers for 2 hand-checked towns (one coastal, one inland) match manual
-queries against the same services, and Atlantic City reports missing data rather
-than zero exposure.
+queries against the same services, and Atlantic City reports per-block-group
+missingness (no data for 32 of 41) with percentages computed only over mapped
+block groups.
 
 **S7. About the data.**
 In-app section: the three sources with links, NJDEP's quoted definition of
 overburdened community, data limitations (NFHL currency and coverage gaps,
-block-group resolution, planimetric boundaries).
+block-group resolution, planimetric boundaries). Must also state plainly that the
+NJDEP layer contains only communities designated overburdened under the NJ EJ Law
+(3,180 block groups statewide), so non-overburdened block groups are not shown or
+counted anywhere in the app: a deliberate lens, not an omission (DECISIONS.md D12).
 Accept: every number in the panel is one click from its source.
 
 ## Phase 3: improvement passes (only after S1-S7 all pass)

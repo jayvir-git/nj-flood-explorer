@@ -8,4 +8,8 @@ Parking lot. Nothing here is scope. Ideas land here instead of in code.
 - Shareable permalink for a selected municipality
 - Printable one-page report per municipality
 - CDC Social Vulnerability Index as an alternate lens alongside NJDEP OBC
+- All-block-groups denominator via a Census TIGER block-group service, for town-wide
+  context alongside the overburdened-only view
+- Area-weighted exposure percentages (share of each block group's area inside a
+  Special Flood Hazard Area) instead of the binary intersects test of D12
 - Spanish-language UI
