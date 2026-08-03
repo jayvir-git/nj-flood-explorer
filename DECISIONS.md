@@ -94,3 +94,19 @@ the first count comes back zero.
 Rejected: reporting Atlantic City as 0% flood-exposed, which is what a naive count
 would produce and is the most dangerous wrong answer this app could give. S6 and S7
 carry the consequence.
+
+## D10. Deployed on Vercel unconfigured, and the bundle left alone until P3
+Vercel detects the Vite framework by itself, so there is no vercel.json and no build
+overrides; the first `vercel deploy --prod` was the only manual step, and the CLI
+found the GitHub remote and connected it, so pushes now deploy themselves. The
+production build is 15.2 MB over 1,224 chunks and Vite warns that several exceed
+500 kB, essentially all of it the ArcGIS SDK. Deliberately not touched: P3 owns
+performance, and code-splitting the SDK before the app's shape is settled would be
+optimising a moving target. The number is recorded so P3 starts from a measurement.
+
+The live site logged "Access to storage is not allowed from this context" four
+times, which was a browser extension and not the app: it vanishes in an incognito
+window, the app stores nothing, and the only two bundled chunks that reach for
+localStorage (IdentityManager, and video.js inside VideoLayer) both wrap it in
+try/catch and neither loads here. Noted so the same console line does not get
+investigated twice.

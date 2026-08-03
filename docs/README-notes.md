@@ -111,5 +111,6 @@ and everything from S3 onward.
 
 ## Mechanics
 
+- Live: https://nj-flood-explorer.vercel.app — Vercel, redeploys on push to main.
 - Run locally: `npm install && npm run dev`
 - What's next: point at `FUTURE.md`, don't restate it.
