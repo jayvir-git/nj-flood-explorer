@@ -1,6 +1,10 @@
+import { Suspense, lazy } from 'react'
 import { AboutData } from './AboutData'
-import { ExposureSummary } from './ExposureSummary'
 import type { ExposureState, SelectionState, TownOption } from './NjMap'
+
+const ExposureSummary = lazy(() =>
+  import('./ExposureSummary').then((module) => ({ default: module.ExposureSummary })),
+)
 
 // COUNTY comes back upper case from the service; NAME does not.
 function titleCase(value: string) {
@@ -78,11 +82,13 @@ export function TownPanel({
           <h2 className="town-name">{selection.name}</h2>
           <p className="town-county">{titleCase(selection.county)} County</p>
           {exposure.kind === 'ready' && (
-            <ExposureSummary
-              town={selection.name}
-              exposure={exposure.result}
-              onOpenAbout={onOpenAbout}
-            />
+            <Suspense fallback={<p className="town-status">Loading summary…</p>}>
+              <ExposureSummary
+                town={selection.name}
+                exposure={exposure.result}
+                onOpenAbout={onOpenAbout}
+              />
+            </Suspense>
           )}
         </>
       )}

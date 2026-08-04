@@ -5,6 +5,11 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NJ Flood Exposure Explorer</title>
+    <!-- Origins the app queries on first paint; named by Lighthouse preconnect audit (P3). -->
+    <link rel="preconnect" href="https://basemaps.arcgis.com" crossorigin />
+    <link rel="preconnect" href="https://services2.arcgis.com" crossorigin />
+    <link rel="preconnect" href="https://mapsdep.nj.gov" crossorigin />
+    <link rel="preconnect" href="https://hazards.fema.gov" crossorigin />
   </head>
   <body>
     <div id="root"></div>

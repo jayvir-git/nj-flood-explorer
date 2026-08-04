@@ -4,10 +4,11 @@ import {
   EJ_LEGEND_GROUPS,
   FLOOD_CLASSES,
   MUNICIPALITY_OUTLINE,
-} from '../layers'
+} from '../legend'
 import type { FloodStatus, LayerKey } from './NjMap'
 
 const FLOOD_MESSAGES: Partial<Record<FloodStatus, string>> = {
+  'loading-map': 'Loading map…',
   'zoomed-out':
     'Zoom in to see flood zones. FEMA only draws them at neighborhood scale (about 1:36,000 and closer).',
   'outside-sfha':

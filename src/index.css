@@ -260,6 +260,15 @@ body,
   inset: 0;
 }
 
+.map-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e8e8e8;
+  color: #5c5c5c;
+  font-size: 14px;
+}
+
 .panel {
   position: absolute;
   top: 12px;

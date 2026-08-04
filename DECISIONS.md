@@ -289,3 +289,55 @@ features (D2/D3 — the service remains authoritative).
 P2 Lighthouse accessibility on the local production build
 (`vite preview`, Lighthouse 12.8.2, accessibility category only): **100**. No
 audits scored 0. Keyboard path: layer toggles → town `<select>` → panel → About.
+
+## D18. Performance pass: defer ArcGIS off the critical path (P3)
+Baseline on the local production build before changes (`npm run build`,
+`vite preview`, Lighthouse performance; D10's recorded bundle was 15.2 MB over
+1,224 chunks — this run measured **15.6 MB / ~1,229 JS chunks** before edits):
+
+| | Score | LCP | TBT | CLS | FCP |
+|---|---:|---:|---:|---:|---:|
+| Mobile before | 29 | 22134 ms | 1522 ms | 0.009 | 15538 ms |
+| Desktop before | 50 | 6259 ms | 202 ms | 0.004 | 4471 ms |
+
+Top named items: unused JavaScript (ArcGIS-dominated), preconnect to data origins,
+unused CSS (ArcGIS theme). Desktop also flagged HTTP/2 against localhost preview.
+
+**Changed (measurement-backed):**
+- Dynamic-import `MapStage` (ArcGIS MapView + layers) with a map-slot placeholder
+  so the shell (picker, panel, About, layer legend) paints without the SDK; start
+  that import after the first animation frame so it does not race FCP. LCP/FCP were
+  dominated by SDK boot/render delay (D10's lever).
+- Split legend constants into `legend.ts` with no `@arcgis/core` imports —
+  `LayerPanel` had been statically importing `layers.ts` and pulling the SDK
+  into the entry despite the lazy map.
+- `build.modulePreload: false` — Vite was emitting ~200 `modulepreload` links
+  for the lazy ArcGIS graph into `index.html`, undoing the split.
+- Lazy-load `ExposureSummary` / Recharts (unused JS inside the former entry).
+- `preconnect` to basemaps.arcgis.com, services2.arcgis.com, mapsdep.nj.gov,
+  hazards.fema.gov (named by the preconnect audit; SDK assets are bundled, not CDN).
+- Town list / pick via REST in `towns.ts` so the shell does not need FeatureLayer;
+  attach FeatureSet-root `spatialReference` to geometries (Esri omits it on each
+  feature) so picker-driven exposure matches map-click numbers.
+
+After (same harness; accessibility category still **100**, D17):
+
+| | Score | LCP | TBT | CLS | FCP |
+|---|---:|---:|---:|---:|---:|
+| Mobile after | 53 | 3183 ms | 4036 ms | 0.003 | 2177 ms |
+| Desktop after | 43 | 6384 ms | 571 ms | 0.002 | 542 ms |
+
+Bundle after: **15.0 MB**, 1,231 JS chunks; entry JS ~190 KB (was ~1.9 MB when the
+SDK rode the main graph). TBT rose because FCP moved earlier and ArcGIS parse/boot
+now falls inside the FCP→TTI window rather than delaying first paint; mobile score
+still improved on LCP/FCP. Desktop score dipped on the same TBT attribution; shell
+FCP is much faster on both.
+
+**Rejected:**
+- HTTP/2 fix for `vite preview` — localhost preview artifact; production on
+  Vercel is already HTTP/2.
+- Stripping or rewriting ArcGIS theme CSS — unused-CSS savings are the SDK skin
+  required once the map loads; no safe subset without new tooling.
+- Deferring NFHL until zoomed (PLAN.md hint) — not what this audit's top items
+  named once the preload leak was fixed; flood layer already respects FEMA minScale.
+- SSR / new dependencies / inventing flood colours — out of P3 scope.
