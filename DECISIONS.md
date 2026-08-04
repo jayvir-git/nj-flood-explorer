@@ -241,3 +241,37 @@ environment. The definition lives in 13:1D-158 (definitions), not 13:1D-157
 (findings); the About section names both the chapter URL and the correct section
 cite. The live NJDEP service and info URLs in sources.ts remain the links for the
 layer itself.
+
+## D16. EJ palette ordered by number of statutory criteria met (P1)
+P1 replaces the arbitrary qualitative shuffle from D8. Each of the six
+OVERBURDENED_COMMUNITY_CRITERI values is coloured by how many of the law's three
+axes it meets (low income, minority / tribal, limited English):
+
+| Criteria | Value | Hex |
+|---|---|---|
+| 1 | Low Income | `#fd8d3c` |
+| 1 | Minority | `#8073ac` |
+| 2 | Low Income and Minority | `#e66101` |
+| 2 | Low Income and Limited English | `#c51b7d` |
+| 2 | Minority and Limited English | `#4d9221` |
+| 3 | Low Income, Minority, and Limited English | `#542788` |
+
+Lighter / mid / darkest tracks 1 → 2 → 3. Hue families still hint at which axes
+are involved (warm for income, purple for minority, magenta when limited English
+pairs with income, green when it pairs with minority) without claiming a
+perceptual "mix" of the single-axis colours. Cyan and blue stay withheld so FEMA's
+`#00e6ff` / `#ff0000` flood drawingInfo remains the only cool flood signal (D8).
+Fill opacity stays 0.45; raising it did not fix neighbour luminance ratios and
+would only bury the basemap.
+
+Rejected: a single-hue sequential scale by criteria count (loses which axes fire);
+keeping the old Dark2-like order with a prose rationale bolted on (the order was
+still meaningless); inventing our own flood colours (the MapImageLayer uses FEMA's
+renderer).
+
+Contrast check: chart series on white — exposed `#0b6a8a` 6.1:1, unmapped
+`#8a3200` 8.3:1; outside-SFHA `#c9c9c9` 1.7:1 left muted on purpose (status fill,
+not text). Map fills at 0.45 over gray-vector distinguish by hue more than by
+WCAG luminance (adjacent blended pairs sit near 1.0–1.5:1); flood cyan remains a
+separate hue family from every EJ swatch. Selection halo and municipal outline
+unchanged. Chart series unchanged — they encode exposure status, not EJ class.

@@ -85,6 +85,8 @@ Field is `OVERBURDENED_COMMUNITY_CRITERI`. Total 3,180.
 - Municipality as the unit of answer: people identify with their town and NJ
   hazard planning is municipal, even though block groups are the data's unit. (D4)
 - Cyan is reserved for flood zones so the EJ fill underneath never competes. (D8)
+- EJ palette is ordered by how many statutory criteria a block group meets (1→2→3),
+  not an arbitrary qualitative shuffle. (D16 / P1)
 
 ## AI-tooling disclosure — raw material, your voice
 

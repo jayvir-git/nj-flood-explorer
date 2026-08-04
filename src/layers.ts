@@ -11,15 +11,18 @@ import { SOURCES } from './config/sources'
 /** The minScale FEMA publishes on layer 28. Above it the service draws nothing. */
 export const FLOOD_MIN_SCALE = 36111.909643
 
-// The six values of OVERBURDENED_COMMUNITY_CRITERI, read from the live service.
-// Cyan is reserved for the FEMA flood zones drawn on top of this fill.
+// Six OVERBURDENED_COMMUNITY_CRITERI values, ordered by how many statutory axes
+// they meet (1 → 2 → 3). Cyan/blue withheld so FEMA flood zones stay readable (D8/D16).
 export const EJ_CRITERIA: ReadonlyArray<readonly [string, string]> = [
-  ['Low Income', '#e6ab02'],
-  ['Minority', '#7570b3'],
-  ['Low Income and Limited English', '#e7298a'],
-  ['Low Income and Minority', '#d95f02'],
-  ['Minority and Limited English', '#66a61e'],
-  ['Low Income, Minority, and Limited English', '#a6761d'],
+  // 1 criterion — lighter weight, still distinct after 45% opacity over gray-vector
+  ['Low Income', '#fd8d3c'],
+  ['Minority', '#8073ac'],
+  // 2 criteria — mid weight
+  ['Low Income and Minority', '#e66101'],
+  ['Low Income and Limited English', '#c51b7d'],
+  ['Minority and Limited English', '#4d9221'],
+  // 3 criteria — heaviest
+  ['Low Income, Minority, and Limited English', '#542788'],
 ]
 
 // FEMA's own labels and colours, from layer 28's drawingInfo. These are the only
