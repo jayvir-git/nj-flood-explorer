@@ -1,15 +1,24 @@
 import type { ReactNode } from 'react'
-import { EJ_CRITERIA, FLOOD_CLASSES, MUNICIPALITY_OUTLINE } from '../layers'
+import {
+  EJ_CRITERIA,
+  EJ_LEGEND_GROUPS,
+  FLOOD_CLASSES,
+  MUNICIPALITY_OUTLINE,
+} from '../layers'
 import type { FloodStatus, LayerKey } from './NjMap'
 
 const FLOOD_MESSAGES: Partial<Record<FloodStatus, string>> = {
-  'zoomed-out': 'Zoom in to see flood zones. FEMA publishes them only at 1:36,000 and closer.',
-  'outside-sfha': 'FEMA maps this area as outside the Special Flood Hazard Area.',
+  'zoomed-out':
+    'Zoom in to see flood zones. FEMA only draws them at neighborhood scale (about 1:36,000 and closer).',
+  'outside-sfha':
+    'FEMA maps this view as outside the Special Flood Hazard Area (the high-risk flood zones).',
   unmapped: 'FEMA publishes no flood hazard data here. Blank does not mean safe.',
   error: 'The FEMA flood zone service is not responding.',
 }
 
 const FLOOD_WARNINGS = new Set<FloodStatus>(['unmapped', 'error'])
+
+const COLOR_BY_CRITERION = new Map(EJ_CRITERIA.map(([value, color]) => [value, color]))
 
 type Props = {
   visibility: Record<LayerKey, boolean>
@@ -21,17 +30,17 @@ export function LayerPanel({ visibility, onToggle, floodStatus }: Props) {
   const floodMessage = FLOOD_MESSAGES[floodStatus]
 
   return (
-    <div className="panel">
+    <div className="panel" role="region" aria-label="Map layers">
       <LayerToggle
         label="Flood hazard zones"
         checked={visibility.flood}
         onChange={() => onToggle('flood')}
       >
         <ul className="swatches">
-          {FLOOD_CLASSES.map(([label, color]) => (
-            <li key={label}>
+          {FLOOD_CLASSES.map(([key, color, legend]) => (
+            <li key={key}>
               <span className="swatch" style={{ background: color }} />
-              {label}
+              {legend}
             </li>
           ))}
         </ul>
@@ -48,14 +57,22 @@ export function LayerPanel({ visibility, onToggle, floodStatus }: Props) {
         checked={visibility.ej}
         onChange={() => onToggle('ej')}
       >
-        <ul className="swatches">
-          {EJ_CRITERIA.map(([label, color]) => (
-            <li key={label}>
-              <span className="swatch" style={{ background: color }} />
-              {label}
-            </li>
-          ))}
-        </ul>
+        {EJ_LEGEND_GROUPS.map((group) => (
+          <div key={group.heading} className="legend-group">
+            <p className="legend-group-heading">{group.heading}</p>
+            <ul className="swatches">
+              {group.values.map((value) => (
+                <li key={value}>
+                  <span
+                    className="swatch"
+                    style={{ background: COLOR_BY_CRITERION.get(value) }}
+                  />
+                  {value}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </LayerToggle>
 
       <LayerToggle
@@ -66,7 +83,7 @@ export function LayerPanel({ visibility, onToggle, floodStatus }: Props) {
         <ul className="swatches">
           <li>
             <span className="swatch line" style={{ borderColor: MUNICIPALITY_OUTLINE }} />
-            Municipality
+            Town boundary
           </li>
         </ul>
       </LayerToggle>

@@ -275,3 +275,17 @@ not text). Map fills at 0.45 over gray-vector distinguish by hue more than by
 WCAG luminance (adjacent blended pairs sit near 1.0–1.5:1); flood cyan remains a
 separate hue family from every EJ swatch. Selection halo and municipal outline
 unchanged. Chart series unchanged — they encode exposure status, not EJ class.
+
+## D17. Keyboard town picker shares the map-click selection path (P2)
+Selection was map-canvas click only, which left keyboard users unable to reach the
+app's core purpose. P2 adds a native `<select>` of municipalities, populated once
+from the NJOGIS service with `returnGeometry: false`, that resolves a choice by
+`MUN_CODE` with geometry and feeds the same highlight and exposure path as a click.
+It is an accessibility affordance, not a search product: no typeahead library, no
+second interaction model. Rejected: relying on map keyboard focus (ArcGIS MapView
+has no equivalent town-pick gesture for assistive tech); hitTest against drawn
+features (D2/D3 — the service remains authoritative).
+
+P2 Lighthouse accessibility on the local production build
+(`vite preview`, Lighthouse 12.8.2, accessibility category only): **100**. No
+audits scored 0. Keyboard path: layer toggles → town `<select>` → panel → About.

@@ -1,9 +1,17 @@
-import { Bar, BarChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from 'recharts'
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Legend,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts'
 import { SOURCES } from '../config/sources'
 import type { CriterionTally, ExposureResult } from '../exposure'
 
-const CHART_WIDTH = 366
-const AXIS_WIDTH = 150
+const AXIS_WIDTH = 130
 
 const SERIES = [
   { key: 'exposed', name: 'Flood-exposed', color: '#0b6a8a' },
@@ -15,8 +23,7 @@ function percent(part: number, whole: number) {
   return whole === 0 ? '—' : `${Math.round((part / whole) * 100)}%`
 }
 
-// The criteria are legal categories and are never shortened, so the axis wraps
-// them instead.
+// Legal category names are never shortened; the axis wraps them instead.
 function wrap(label: string, maxChars: number) {
   const lines: string[] = []
   let line = ''
@@ -35,7 +42,7 @@ function wrap(label: string, maxChars: number) {
 type TickProps = { x?: number; y?: number; payload?: { value?: string } }
 
 function WrappedTick({ x = 0, y = 0, payload }: TickProps) {
-  const lines = wrap(payload?.value ?? '', 22)
+  const lines = wrap(payload?.value ?? '', 18)
   return (
     <text x={x} y={y} textAnchor="end" fontSize={10} fill="#444">
       {lines.map((line, index) => (
@@ -58,7 +65,7 @@ export function ExposureSummary({ town, exposure, onOpenAbout }: Props) {
     return (
       <section className="exposure">
         <p className="exposure-summary">
-          NJDEP designates no overburdened communities intersecting {town}, so this app has
+          NJDEP lists no overburdened communities intersecting {town}, so this app has
           nothing to report for it.
         </p>
         <Sources onOpenAbout={onOpenAbout} />
@@ -75,8 +82,8 @@ export function ExposureSummary({ town, exposure, onOpenAbout }: Props) {
           {exposure.blockGroups === 1 ? '' : 's'} intersecting {town}.
         </p>
         <p className="exposure-note">
-          No exposure figure can be derived. A blank flood map is not a finding that the
-          area is unexposed.
+          No exposure figure can be derived. A blank flood map does not mean the area is
+          safe.
         </p>
         <Sources onOpenAbout={onOpenAbout} />
       </section>
@@ -87,6 +94,7 @@ export function ExposureSummary({ town, exposure, onOpenAbout }: Props) {
   const shown = SERIES.filter((series) =>
     byCriterion.some((tally) => tally[series.key] > 0),
   )
+  const chartHeight = 74 + byCriterion.length * 46
 
   return (
     <section className="exposure">
@@ -95,47 +103,54 @@ export function ExposureSummary({ town, exposure, onOpenAbout }: Props) {
           <>
             FEMA publishes no flood hazard data for {unmapped} of the {blockGroups}{' '}
             overburdened community block groups intersecting {town}; of the {mapped} it maps,{' '}
-            {exposed} intersect a Special Flood Hazard Area.
+            {exposed} intersect a Special Flood Hazard Area (high-risk flood zone).
           </>
         ) : (
           <>
             {exposed} of the {blockGroups} overburdened community block group
             {blockGroups === 1 ? '' : 's'} intersecting {town} intersect a FEMA Special Flood
-            Hazard Area.
+            Hazard Area (high-risk flood zone).
           </>
         )}
       </p>
 
-      <BarChart
-        width={CHART_WIDTH}
-        height={74 + byCriterion.length * 46}
-        data={byCriterion}
-        layout="vertical"
-        margin={{ top: 4, right: 14, bottom: 4, left: 4 }}
-      >
-        <CartesianGrid horizontal={false} stroke="#ededed" />
-        <XAxis type="number" allowDecimals={false} fontSize={11} />
-        <YAxis
-          type="category"
-          dataKey="criterion"
-          width={AXIS_WIDTH}
-          tick={<WrappedTick />}
-          interval={0}
-        />
-        <Tooltip cursor={{ fill: '#f5f5f5' }} />
-        <Legend wrapperStyle={{ fontSize: 11 }} />
-        {shown.map((series) => (
-          <Bar
-            key={series.key}
-            dataKey={series.key}
-            name={series.name}
-            stackId="a"
-            fill={series.color}
-          />
-        ))}
-      </BarChart>
+      {/* Same numbers as the table below; table is the accessible equivalent. */}
+      <div className="exposure-chart" aria-hidden="true">
+        <ResponsiveContainer width="100%" height={chartHeight}>
+          <BarChart
+            data={byCriterion}
+            layout="vertical"
+            margin={{ top: 4, right: 14, bottom: 4, left: 4 }}
+          >
+            <CartesianGrid horizontal={false} stroke="#ededed" />
+            <XAxis type="number" allowDecimals={false} fontSize={11} />
+            <YAxis
+              type="category"
+              dataKey="criterion"
+              width={AXIS_WIDTH}
+              tick={<WrappedTick />}
+              interval={0}
+            />
+            <Tooltip cursor={{ fill: '#f5f5f5' }} />
+            <Legend wrapperStyle={{ fontSize: 11 }} />
+            {shown.map((series) => (
+              <Bar
+                key={series.key}
+                dataKey={series.key}
+                name={series.name}
+                stackId="a"
+                fill={series.color}
+              />
+            ))}
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
 
       <table className="exposure-table">
+        <caption className="sr-only">
+          Overburdened community block groups intersecting {town}, by criterion and flood
+          exposure
+        </caption>
         <thead>
           <tr>
             <th scope="col">Overburdened community criterion</th>

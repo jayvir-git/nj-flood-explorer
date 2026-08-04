@@ -112,8 +112,8 @@ export function AboutData({ onClose }: Props) {
           nest cleanly inside municipal boundaries.
         </li>
         <li>
-          Municipal boundaries on the map are planimetric outlines and can extend into water,
-          so a click just offshore may still select a town.
+          Town boundaries on the map are flat outlines and can extend into water, so a click
+          just offshore may still select a town.
         </li>
       </ul>
     </section>
