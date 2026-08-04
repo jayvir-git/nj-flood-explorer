@@ -12,8 +12,9 @@ communities), click a municipality to get a plain-language summary with one char
 and one table. Nothing else.
 
 ## Scope discipline (the most important rule)
-- The scope is defined by docs/PLAN.md. Build the current slice only.
-- Any feature idea outside the current slice goes into FUTURE.md, never into code.
+- The scope is defined by docs/PLAN.md (S1–S7 and P1–P4 are complete). Do not
+  expand past that plan unless a new slice is written there first.
+- Any feature idea outside the plan goes into FUTURE.md, never into code.
 - Do not add libraries, abstractions, config options, or "while we're here"
   improvements that the current slice does not need.
 
@@ -23,8 +24,8 @@ and one table. Nothing else.
   substitute service URLs, layer IDs, or field names; if something seems wrong,
   stop and say so instead of improvising.
 - Every user-facing number must be traceable to a source; the UI links sources.
-- Legal definitions (e.g. "overburdened community", N.J.S.A. 13:1D-157) are quoted
-  from NJDEP, never paraphrased into new thresholds.
+- Legal definitions (e.g. "overburdened community", N.J.S.A. 13:1D-158) are quoted
+  from the statute / NJDEP, never paraphrased into new thresholds.
 
 ## Code conventions
 - React function components, TypeScript strict, no class components.

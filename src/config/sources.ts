@@ -15,7 +15,7 @@ export const SOURCES = {
       sfha: "SFHA_TF",
     },
   },
-  /** NJDEP Overburdened Communities under the NJ EJ Law (N.J.S.A. 13:1D-157). Census block groups. */
+  /** NJDEP Overburdened Communities under the NJ EJ Law (N.J.S.A. 13:1D-157 et seq.). Census block groups. */
   njdepOverburdened: {
     url: "https://mapsdep.nj.gov/arcgis/rest/services/Features/Government/MapServer/42",
     infoUrl: "https://dep.nj.gov/ej/",

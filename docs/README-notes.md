@@ -1,8 +1,8 @@
 # Raw material for the README
 
-Facts and numbers only, for writing the README at P4. Not prose to reuse.
-Everything here was measured against the live services or decided in DECISIONS.md.
-Numbers measured 2026-08-02.
+Facts and numbers used when writing the README (finished at `4e8f244`). Not prose
+to reuse. Everything here was measured against the live services or decided in
+DECISIONS.md. Numbers measured 2026-08-02.
 
 ## The three sources
 
@@ -12,7 +12,7 @@ Numbers measured 2026-08-02.
 | Type | MapServer, server-rendered | MapServer feature layer | Hosted FeatureServer |
 | Records | 36,839 SFHA polygons in a bounding box around NJ | 3,180 block groups | 564 municipalities |
 | Record cap | 2,000 per query | 2,000 | 2,000 |
-| Authority | federal system of record for regulatory flood zones | the state's own layer implementing N.J.S.A. 13:1D-157 | state GIS office |
+| Authority | federal system of record for regulatory flood zones | the state's own layer implementing N.J.S.A. 13:1D-157 et seq. | state GIS office |
 
 URLs and field names live in `src/config/sources.ts`, verified by hand in a browser.
 
@@ -46,8 +46,9 @@ Field is `OVERBURDENED_COMMUNITY_CRITERI`. Total 3,180.
 
 ## Definitions to quote, never paraphrase
 
-- "Overburdened community" — quote NJDEP verbatim and link https://dep.nj.gov/ej/.
-  The statute is N.J.S.A. 13:1D-157. Do not restate the thresholds in your own
+- "Overburdened community" — quote the Legislature chapter text (D15) and link
+  https://dep.nj.gov/ej/ for the layer. Definition is N.J.S.A. 13:1D-158; the act
+  as a whole is 13:1D-157 et seq. Do not restate the thresholds in your own
   words; the percentages are legal definitions, not descriptions.
 - "Special Flood Hazard Area" — the app filters on FEMA's own `SFHA_TF = 'T'`
   flag rather than a hand-listed set of zone codes, so the definition stays FEMA's.
