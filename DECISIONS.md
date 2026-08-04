@@ -237,7 +237,7 @@ trip.
 
 ## D15. Overburdened-community definition quoted from the Legislature chapter text
 The About section quotes the definition of "overburdened community" from
-P.L. 2020, c. 92, ?2 (N.J.S.A. 13:1D-158), retrieved from
+P.L. 2020, c. 92, §2 (N.J.S.A. 13:1D-158), retrieved from
 https://www.njleg.state.nj.us/2020/Bills/PL20/92_.HTM. Rejected: typing the thresholds
 from memory, and citing dep.nj.gov/ej as the quote's source when that origin and
 NJDEP's hosted ej-law.pdf returned only Incapsula/bot-challenge HTML from this
@@ -260,7 +260,7 @@ axes it meets (low income, minority / tribal, limited English):
 | 2 | Minority and Limited English | `#4d9221` |
 | 3 | Low Income, Minority, and Limited English | `#542788` |
 
-Lighter / mid / darkest tracks 1 ? 2 ? 3. Hue families still hint at which axes
+Lighter / mid / darkest tracks 1 → 2 → 3. Hue families still hint at which axes
 are involved (warm for income, purple for minority, magenta when limited English
 pairs with income, green when it pairs with minority) without claiming a
 perceptual "mix" of the single-axis colours. Cyan and blue stay withheld so FEMA's
@@ -273,12 +273,12 @@ keeping the old Dark2-like order with a prose rationale bolted on (the order was
 still meaningless); inventing our own flood colours (the MapImageLayer uses FEMA's
 renderer).
 
-Contrast check: chart series on white ? exposed `#0b6a8a` 6.1:1, unmapped
+Contrast check: chart series on white — exposed `#0b6a8a` 6.1:1, unmapped
 `#8a3200` 8.3:1; outside-SFHA `#c9c9c9` 1.7:1 left muted on purpose (status fill,
 not text). Map fills at 0.45 over gray-vector distinguish by hue more than by
-WCAG luminance (adjacent blended pairs sit near 1.0?1.5:1); flood cyan remains a
+WCAG luminance (adjacent blended pairs sit near 1.0–1.5:1); flood cyan remains a
 separate hue family from every EJ swatch. Selection halo and municipal outline
-unchanged. Chart series unchanged ? they encode exposure status, not EJ class.
+unchanged. Chart series unchanged — they encode exposure status, not EJ class.
 
 ## D17. Keyboard town picker shares the map-click selection path (P2)
 Selection was map-canvas click only, which left keyboard users unable to reach the
@@ -288,16 +288,16 @@ from the NJOGIS service with `returnGeometry: false`, that resolves a choice by
 It is an accessibility affordance, not a search product: no typeahead library, no
 second interaction model. Rejected: relying on map keyboard focus (ArcGIS MapView
 has no equivalent town-pick gesture for assistive tech); hitTest against drawn
-features (D2/D3 ? the service remains authoritative).
+features (D2/D3 — the service remains authoritative).
 
 P2 Lighthouse accessibility on the local production build
 (`vite preview`, Lighthouse 12.8.2, accessibility category only): **100**. No
-audits scored 0. Keyboard path: layer toggles ? town `<select>` ? panel ? About.
+audits scored 0. Keyboard path: layer toggles → town `<select>` → panel → About.
 
 ## D18. Performance pass: defer ArcGIS off the critical path (P3)
 Baseline on the local production build before changes (`npm run build`,
 `vite preview`, Lighthouse performance; D10's recorded bundle was 15.2 MB over
-1,224 chunks ? this run measured **15.6 MB / ~1,229 JS chunks** before edits):
+1,224 chunks — this run measured **15.6 MB / ~1,229 JS chunks** before edits):
 
 | | Score | LCP | TBT | CLS | FCP |
 |---|---:|---:|---:|---:|---:|
@@ -312,10 +312,10 @@ unused CSS (ArcGIS theme). Desktop also flagged HTTP/2 against localhost preview
   so the shell (picker, panel, About, layer legend) paints without the SDK; start
   that import after the first animation frame so it does not race FCP. LCP/FCP were
   dominated by SDK boot/render delay (D10's lever).
-- Split legend constants into `legend.ts` with no `@arcgis/core` imports ?
+- Split legend constants into `legend.ts` with no `@arcgis/core` imports —
   `LayerPanel` had been statically importing `layers.ts` and pulling the SDK
   into the entry despite the lazy map.
-- `build.modulePreload: false` ? Vite was emitting ~200 `modulepreload` links
+- `build.modulePreload: false` — Vite was emitting ~200 `modulepreload` links
   for the lazy ArcGIS graph into `index.html`, undoing the split.
 - Lazy-load `ExposureSummary` / Recharts (unused JS inside the former entry).
 - `preconnect` to basemaps.arcgis.com, services2.arcgis.com, mapsdep.nj.gov,
@@ -333,15 +333,15 @@ After (same harness; accessibility category still **100**, D17):
 
 Bundle after: **15.0 MB**, 1,231 JS chunks; entry JS ~190 KB (was ~1.9 MB when the
 SDK rode the main graph). TBT rose because FCP moved earlier and ArcGIS parse/boot
-now falls inside the FCP?TTI window rather than delaying first paint; mobile score
+now falls inside the FCP→TTI window rather than delaying first paint; mobile score
 still improved on LCP/FCP. Desktop score dipped on the same TBT attribution; shell
 FCP is much faster on both.
 
 **Rejected:**
-- HTTP/2 fix for `vite preview` ? localhost preview artifact; production on
+- HTTP/2 fix for `vite preview` — localhost preview artifact; production on
   Vercel is already HTTP/2.
-- Stripping or rewriting ArcGIS theme CSS ? unused-CSS savings are the SDK skin
+- Stripping or rewriting ArcGIS theme CSS — unused-CSS savings are the SDK skin
   required once the map loads; no safe subset without new tooling.
-- Deferring NFHL until zoomed (PLAN.md hint) ? not what this audit's top items
+- Deferring NFHL until zoomed (PLAN.md hint) — not what this audit's top items
   named once the preload leak was fixed; flood layer already respects FEMA minScale.
-- SSR / new dependencies / inventing flood colours ? out of P3 scope.
+- SSR / new dependencies / inventing flood colours — out of P3 scope.
