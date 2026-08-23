@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import {
   Bar,
   BarChart,
@@ -10,6 +11,7 @@ import {
 } from 'recharts'
 import { SOURCES } from '../config/sources'
 import { exposureSummarySentence, type CriterionTally, type ExposureResult } from '../exposure'
+import type { AboutOpener } from './NjMap'
 
 const AXIS_WIDTH = 130
 
@@ -57,15 +59,27 @@ function WrappedTick({ x = 0, y = 0, payload }: TickProps) {
 type Props = {
   town: string
   exposure: ExposureResult
-  onOpenAbout: () => void
+  restoreFocus: AboutOpener | null
+  onOpenAbout: (source: AboutOpener) => void
+  onRestoredFocus: () => void
 }
 
-export function ExposureSummary({ town, exposure, onOpenAbout }: Props) {
+export function ExposureSummary({
+  town,
+  exposure,
+  restoreFocus,
+  onOpenAbout,
+  onRestoredFocus,
+}: Props) {
   if (exposure.kind === 'no-overburdened') {
     return (
       <section className="exposure">
         <p className="exposure-summary">{exposureSummarySentence(town, exposure)}</p>
-        <Sources onOpenAbout={onOpenAbout} />
+        <Sources
+          restoreFocus={restoreFocus}
+          onOpenAbout={onOpenAbout}
+          onRestoredFocus={onRestoredFocus}
+        />
       </section>
     )
   }
@@ -80,7 +94,11 @@ export function ExposureSummary({ town, exposure, onOpenAbout }: Props) {
           No exposure figure can be derived. A blank flood map does not mean the area is
           safe.
         </p>
-        <Sources onOpenAbout={onOpenAbout} />
+        <Sources
+          restoreFocus={restoreFocus}
+          onOpenAbout={onOpenAbout}
+          onRestoredFocus={onRestoredFocus}
+        />
       </section>
     )
   }
@@ -155,7 +173,11 @@ export function ExposureSummary({ town, exposure, onOpenAbout }: Props) {
         </tbody>
       </table>
 
-      <Sources onOpenAbout={onOpenAbout} />
+      <Sources
+        restoreFocus={restoreFocus}
+        onOpenAbout={onOpenAbout}
+        onRestoredFocus={onRestoredFocus}
+      />
     </section>
   )
 }
@@ -180,7 +202,23 @@ function Row({ tally, showUnmapped }: { tally: CriterionTally; showUnmapped: boo
   )
 }
 
-function Sources({ onOpenAbout }: { onOpenAbout: () => void }) {
+function Sources({
+  restoreFocus,
+  onOpenAbout,
+  onRestoredFocus,
+}: {
+  restoreFocus: AboutOpener | null
+  onOpenAbout: (source: AboutOpener) => void
+  onRestoredFocus: () => void
+}) {
+  const summaryAboutRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    if (restoreFocus !== 'summary') return
+    summaryAboutRef.current?.focus()
+    onRestoredFocus()
+  }, [restoreFocus, onRestoredFocus])
+
   return (
     <p className="exposure-sources">
       Sources:{' '}
@@ -196,7 +234,12 @@ function Sources({ onOpenAbout }: { onOpenAbout: () => void }) {
         NJOGIS municipal boundaries
       </a>
       .{' '}
-      <button type="button" className="text-button" onClick={onOpenAbout}>
+      <button
+        type="button"
+        className="text-button"
+        ref={summaryAboutRef}
+        onClick={() => onOpenAbout('summary')}
+      >
         About the data
       </button>
     </p>

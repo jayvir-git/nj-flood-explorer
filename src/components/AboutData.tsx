@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { SOURCES } from '../config/sources'
 
 /** Official chapter text of P.L. 2020, c. 92; definition is at N.J.S.A. 13:1D-158. */
@@ -13,10 +14,18 @@ type Props = {
 }
 
 export function AboutData({ onClose }: Props) {
+  const titleRef = useRef<HTMLHeadingElement>(null)
+
+  useEffect(() => {
+    titleRef.current?.focus()
+  }, [])
+
   return (
     <section className="about" id="about-the-data" aria-labelledby="about-title">
       <div className="about-header">
-        <h2 id="about-title">About the data</h2>
+        <h2 id="about-title" ref={titleRef} tabIndex={-1}>
+          About the data
+        </h2>
         <button type="button" className="about-close" onClick={onClose}>
           Back
         </button>

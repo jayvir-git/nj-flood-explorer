@@ -1,7 +1,7 @@
-import { Suspense, lazy } from 'react'
+import { Suspense, lazy, useEffect, useRef } from 'react'
 import { exposureSummarySentence } from '../exposure'
 import { AboutData } from './AboutData'
-import type { ExposureState, SelectionState, TownOption } from './NjMap'
+import type { AboutOpener, ExposureState, SelectionState, TownOption } from './NjMap'
 
 const ExposureSummary = lazy(() =>
   import('./ExposureSummary').then((module) => ({ default: module.ExposureSummary })),
@@ -17,8 +17,10 @@ type Props = {
   exposure: ExposureState
   towns: TownOption[]
   aboutOpen: boolean
-  onOpenAbout: () => void
+  restoreFocus: AboutOpener | null
+  onOpenAbout: (source: AboutOpener) => void
   onCloseAbout: () => void
+  onRestoredFocus: () => void
   onPickTown: (munCode: string | null) => void
 }
 
@@ -27,10 +29,27 @@ export function TownPanel({
   exposure,
   towns,
   aboutOpen,
+  restoreFocus,
   onOpenAbout,
   onCloseAbout,
+  onRestoredFocus,
   onPickTown,
 }: Props) {
+  const panelAboutRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    if (restoreFocus !== 'panel') return
+    panelAboutRef.current?.focus()
+    onRestoredFocus()
+  }, [restoreFocus, onRestoredFocus])
+
+  useEffect(() => {
+    if (restoreFocus !== 'summary') return
+    if (selection.kind === 'selected' && exposure.kind === 'ready') return
+    panelAboutRef.current?.focus()
+    onRestoredFocus()
+  }, [restoreFocus, selection.kind, exposure.kind, onRestoredFocus])
+
   if (aboutOpen) {
     return (
       <aside className="town-panel" aria-label="About the data">
@@ -84,7 +103,9 @@ export function TownPanel({
               <ExposureSummary
                 town={selection.name}
                 exposure={exposure.result}
+                restoreFocus={restoreFocus}
                 onOpenAbout={onOpenAbout}
+                onRestoredFocus={onRestoredFocus}
               />
             </Suspense>
           )}
@@ -92,7 +113,12 @@ export function TownPanel({
       )}
 
       <p className="town-about">
-        <button type="button" className="text-button" onClick={onOpenAbout}>
+        <button
+          type="button"
+          className="text-button"
+          ref={panelAboutRef}
+          onClick={() => onOpenAbout('panel')}
+        >
           About the data
         </button>
       </p>
