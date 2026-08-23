@@ -113,13 +113,16 @@ export function ExposureSummary({
     <section className="exposure">
       <p className="exposure-summary">{exposureSummarySentence(town, exposure)}</p>
 
-      {/* Same numbers as the table below; table is the accessible equivalent. */}
+      {/* Same numbers as the table below; table is the accessible equivalent.
+          Recharts accessibilityLayer is off so the SVG is not a tabindex=0 void
+          inside this aria-hidden wrapper. */}
       <div className="exposure-chart" aria-hidden="true">
         <ResponsiveContainer width="100%" height={chartHeight}>
           <BarChart
             data={byCriterion}
             layout="vertical"
             margin={{ top: 4, right: 14, bottom: 4, left: 4 }}
+            accessibilityLayer={false}
           >
             <CartesianGrid horizontal={false} stroke="#ededed" />
             <XAxis type="number" allowDecimals={false} fontSize={11} />
