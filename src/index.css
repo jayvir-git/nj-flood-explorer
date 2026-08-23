@@ -32,13 +32,30 @@ body,
   border: 0;
 }
 
+.sr-only:focus {
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 8px 12px;
+  overflow: visible;
+  clip: auto;
+  white-space: nowrap;
+  z-index: 20;
+  top: 12px;
+  left: 12px;
+  background: #fff;
+  color: #222;
+  border: 1px solid #d5d5d5;
+}
+
 .map-shell {
+  position: relative;
   display: flex;
   height: 100%;
   min-height: 100%;
 }
 
-/* DOM order is map-area then town-panel (tab: layers → picker). Visual: panel left. */
+/* DOM order is skip → map-area → town-panel. Visual: panel left. */
 .map-area {
   position: relative;
   order: 2;

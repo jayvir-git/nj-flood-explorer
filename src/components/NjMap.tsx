@@ -126,6 +126,9 @@ export function NjMap() {
 
   return (
     <div className="map-shell">
+      <a className="sr-only" href="#town-select">
+        Skip to town selector
+      </a>
       <main className="map-area" aria-label="Map">
         {mapRequested ? (
           <Suspense

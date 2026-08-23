@@ -124,15 +124,17 @@ No H1 existed in any view; headings started at H2.
 Evidence: visible H1 in the panel, present in all three states, outline reads
 H1 > H2 > H3 with no skipped levels.
 
-**A5. Accessible names on the ArcGIS elements.** Done.
+**A5. Accessible names on the ArcGIS elements.** Done. `7dfac97`
 Accept: every element in the accept selector has an accessible name EXCEPT
 .esri-attribution__sources, an SDK-owned tab stop with no public naming path,
 carved out and justified in D19.
 Evidence: MapView.aria.label names the view surface; 12 nodes, 1 documented
 exception.
 
-**A6. Skip link.** Todo.
+**A6. Skip link.** Done.
 Accept: first Tab on load reveals a skip link; Enter moves focus to the town select.
+Evidence: first Tab focuses the `.sr-only` skip link and `:focus` unclips it;
+Enter moves focus to `#town-select`.
 
 **A7. Landmark label matches contents.** Todo.
 Accept: the aside's accessible name describes everything inside it.
