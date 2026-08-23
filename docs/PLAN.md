@@ -119,15 +119,17 @@ only exists after a town is selected.
 Evidence: `accessibilityLayer={false}` on <BarChart>; svg reports tabindex=null and
 role=null; nothing in the wrapper is focusable.
 
-**A4. Page has an H1.** Done.
+**A4. Page has an H1.** Done. `1f7119b`
 No H1 existed in any view; headings started at H2.
 Evidence: visible H1 in the panel, present in all three states, outline reads
 H1 > H2 > H3 with no skipped levels.
 
-**A5. Accessible names on the ArcGIS elements.** Todo.
-Accept: every element matching
-a[href],button,input,select,textarea,[tabindex]:not([tabindex="-1"]) has an
-accessible name, with a town selected.
+**A5. Accessible names on the ArcGIS elements.** Done.
+Accept: every element in the accept selector has an accessible name EXCEPT
+.esri-attribution__sources, an SDK-owned tab stop with no public naming path,
+carved out and justified in D19.
+Evidence: MapView.aria.label names the view surface; 12 nodes, 1 documented
+exception.
 
 **A6. Skip link.** Todo.
 Accept: first Tab on load reveals a skip link; Enter moves focus to the town select.

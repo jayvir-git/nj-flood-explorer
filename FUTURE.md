@@ -13,3 +13,5 @@ Parking lot. Nothing here is scope. Ideas land here instead of in code.
 - Area-weighted exposure percentages (share of each block group's area inside a
   Special Flood Hazard Area) instead of the binary intersects test of D12
 - Spanish-language UI
+- Self-rendered basemap attribution from view.attributionItems, to remove the unnamed
+  SDK tab stop (see D19).

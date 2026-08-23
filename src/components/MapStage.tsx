@@ -80,6 +80,9 @@ export default function MapStage({
         }),
         center: NJ_CENTER,
         zoom: NJ_ZOOM,
+        aria: {
+          label: 'Map of New Jersey flood hazard zones and overburdened communities',
+        },
       })
       viewRef.current = view
       layersRef.current = layers

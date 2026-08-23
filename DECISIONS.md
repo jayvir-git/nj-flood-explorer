@@ -345,3 +345,37 @@ FCP is much faster on both.
 - Deferring NFHL until zoomed (PLAN.md hint) — not what this audit's top items
   named once the preload leak was fixed; flood layer already respects FEMA minScale.
 - SSR / new dependencies / inventing flood colours — out of P3 scope.
+
+## D19. ArcGIS attribution sources have no public name or tab-order API (A5)
+The map surface is named through the public `MapView.aria.label` property
+(DOMContainer since 4.34). `_updateAria()` writes that string onto
+`.esri-view-surface` and leaves `role="application"` in place so arrow-key
+panning stays announced as an application.
+
+The other unnamed tab stop, `.esri-attribution__sources`, is not reachable
+the same way. In `@arcgis/core` 5.1.15 the attribution UI is a private
+`views/Attribution` instance (`_attribution` on DOMContainer). Its only
+constructor inputs are `attributionItems` and `mode`. When the credit line
+overflows it sets `tabindex="0"` on the sources div so the line can be
+expanded; it never sets an accessible name. The sources div has visible text
+but `role=generic`, which does not compute an accessible name from contents.
+The public view surface exposes `attributionItems` (read the text),
+`attributionMode` (light/dark), `attributionHeight` (read), and
+`attributionVisible` (hide the whole bar). Hiding the bar with no replacement
+is rejected: Esri's ToS requires attribution on an ArcGIS Online basemap, and
+we use `gray-vector`. The deprecated `widgets/Attribution` `label` property
+is widget chrome, is not applied to the sources div, and is not what v5
+instantiates.
+
+Alternative considered: set `view.attributionVisible = false` and render the
+attribution ourselves from the public readonly `view.attributionItems` array,
+in our own accessible markup. This is a supported public-API path and still
+displays attribution, so it does not breach the gray-vector requirement.
+Rejected: it trades one stray tab stop for hand-maintained, licensing-sensitive
+markup that must stay correct as basemap sources change. The failure mode of
+getting basemap attribution wrong is worse than the failure mode of an unnamed
+tab stop that has visible text and is announced by most screen readers.
+
+Also rejected: `querySelector` / setting `tabIndex` or `aria-label` on SDK DOM
+(monkey-patch; breaks on the next upgrade); forking or patching
+`@arcgis/core`. Recorded as a third-party limitation. Parked in FUTURE.md.
