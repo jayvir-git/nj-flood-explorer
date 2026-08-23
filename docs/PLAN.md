@@ -131,10 +131,12 @@ carved out and justified in D19.
 Evidence: MapView.aria.label names the view surface; 12 nodes, 1 documented
 exception.
 
-**A6. Skip link.** Done.
+**A6. Skip link.** Done. `c8403fc`
 Accept: first Tab on load reveals a skip link; Enter moves focus to the town select.
 Evidence: first Tab focuses the `.sr-only` skip link and `:focus` unclips it;
 Enter moves focus to `#town-select`.
 
-**A7. Landmark label matches contents.** Todo.
+**A7. Landmark label matches contents.** Done.
 Accept: the aside's accessible name describes everything inside it.
+Evidence: aside labelled "NJ Flood Exposure Explorer" in every view, matching
+the H1, chooser, summary, and About contents.

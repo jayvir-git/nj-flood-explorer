@@ -57,10 +57,7 @@ export function TownPanel({
   const statusIsAnnouncementOnly = exposure.kind === 'ready' && selection.kind === 'selected'
 
   return (
-    <aside
-      className="town-panel"
-      aria-label={aboutOpen ? 'About the data' : 'Town flood exposure'}
-    >
+    <aside className="town-panel" aria-label="NJ Flood Exposure Explorer">
       <h1 className="app-title">NJ Flood Exposure Explorer</h1>
       {aboutOpen ? (
         <AboutData onClose={onCloseAbout} />
