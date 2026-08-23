@@ -90,3 +90,47 @@ Evidence: before/after scores and bundle figures in D18; entry deferred off ArcG
 **P4. Content pass.** Done.
 README finalized (author-written, `4e8f244`, read-only thereafter); DECISIONS.md
 hygiene (heading/pointer/statute consistency; plan marked executed).
+
+## Phase 5: interaction accessibility pass (2026-08-23)
+
+P2 ran axe/Lighthouse and scored accessibility 100. That score is real but it audits
+the DEFAULT page state and cannot drive the interaction. Every defect below is either
+interaction-dependent or lives in a subtree that only renders after a town is
+selected, which is why an automated pass on initial load could not see any of them.
+This phase is the manual pass that P2's tooling could not perform.
+
+**A1. Announce the town summary.** Done. `3abaf1e`
+The `.town-status` live region existed with aria-live="polite" and was never written
+to, so the app's one core interaction was silent to screen readers.
+Evidence: single-source `exposureSummarySentence()` feeds both the visible panel and
+the region; one loading announcement and one result announcement per selection.
+
+**A2. Focus management across view swaps.** Done. `dd1cb59`
+Opening "About the data" unmounted the focused button and dropped focus to <body>,
+returning keyboard users to the top of the document.
+Evidence: opening focuses `#about-title`; Back returns focus to whichever of the two
+triggers opened the view (panel button or Sources button); activeElement never <body>.
+
+**A3. Chart is not a hidden tab stop.** Done. `cca5ebd`
+Recharts sets tabIndex=0 and role="application" on the root svg, inside the
+aria-hidden="true" chart wrapper: a focusable element hidden from the accessibility
+tree (WCAG 4.1.2, axe aria-hidden-focus). Invisible to Lighthouse because the chart
+only exists after a town is selected.
+Evidence: `accessibilityLayer={false}` on <BarChart>; svg reports tabindex=null and
+role=null; nothing in the wrapper is focusable.
+
+**A4. Page has an H1.** Done.
+No H1 existed in any view; headings started at H2.
+Evidence: visible H1 in the panel, present in all three states, outline reads
+H1 > H2 > H3 with no skipped levels.
+
+**A5. Accessible names on the ArcGIS elements.** Todo.
+Accept: every element matching
+a[href],button,input,select,textarea,[tabindex]:not([tabindex="-1"]) has an
+accessible name, with a town selected.
+
+**A6. Skip link.** Todo.
+Accept: first Tab on load reveals a skip link; Enter moves focus to the town select.
+
+**A7. Landmark label matches contents.** Todo.
+Accept: the aside's accessible name describes everything inside it.

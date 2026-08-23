@@ -50,14 +50,6 @@ export function TownPanel({
     onRestoredFocus()
   }, [restoreFocus, selection.kind, exposure.kind, onRestoredFocus])
 
-  if (aboutOpen) {
-    return (
-      <aside className="town-panel" aria-label="About the data">
-        <AboutData onClose={onCloseAbout} />
-      </aside>
-    )
-  }
-
   const selectedCode = selection.kind === 'selected' ? selection.munCode : ''
   const townName =
     selection.kind === 'selected' || selection.kind === 'pending' ? selection.name : undefined
@@ -65,63 +57,73 @@ export function TownPanel({
   const statusIsAnnouncementOnly = exposure.kind === 'ready' && selection.kind === 'selected'
 
   return (
-    <aside className="town-panel" aria-label="Town flood exposure">
-      <div className="town-picker">
-        <label htmlFor="town-select">Town</label>
-        <select
-          id="town-select"
-          value={selectedCode}
-          disabled={towns.length === 0}
-          onChange={(event) => onPickTown(event.target.value || null)}
-        >
-          <option value="">Choose a town…</option>
-          {towns.map((town) => (
-            <option key={town.munCode} value={town.munCode}>
-              {town.name} ({titleCase(town.county)})
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div
-        className={statusIsAnnouncementOnly ? 'town-status sr-only' : 'town-status'}
-        aria-live="polite"
-      >
-        {statusText}
-      </div>
-
-      {selection.kind === 'idle' && !statusText && (
-        <p className="town-prompt">Choose a town from the list, or click it on the map.</p>
-      )}
-
-      {selection.kind === 'selected' && (
+    <aside
+      className="town-panel"
+      aria-label={aboutOpen ? 'About the data' : 'Town flood exposure'}
+    >
+      <h1 className="app-title">NJ Flood Exposure Explorer</h1>
+      {aboutOpen ? (
+        <AboutData onClose={onCloseAbout} />
+      ) : (
         <>
-          <h2 className="town-name">{selection.name}</h2>
-          <p className="town-county">{titleCase(selection.county)} County</p>
-          {exposure.kind === 'ready' && (
-            <Suspense fallback={<p className="town-status">Loading summary…</p>}>
-              <ExposureSummary
-                town={selection.name}
-                exposure={exposure.result}
-                restoreFocus={restoreFocus}
-                onOpenAbout={onOpenAbout}
-                onRestoredFocus={onRestoredFocus}
-              />
-            </Suspense>
+          <div className="town-picker">
+            <label htmlFor="town-select">Town</label>
+            <select
+              id="town-select"
+              value={selectedCode}
+              disabled={towns.length === 0}
+              onChange={(event) => onPickTown(event.target.value || null)}
+            >
+              <option value="">Choose a town…</option>
+              {towns.map((town) => (
+                <option key={town.munCode} value={town.munCode}>
+                  {town.name} ({titleCase(town.county)})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div
+            className={statusIsAnnouncementOnly ? 'town-status sr-only' : 'town-status'}
+            aria-live="polite"
+          >
+            {statusText}
+          </div>
+
+          {selection.kind === 'idle' && !statusText && (
+            <p className="town-prompt">Choose a town from the list, or click it on the map.</p>
           )}
+
+          {selection.kind === 'selected' && (
+            <>
+              <h2 className="town-name">{selection.name}</h2>
+              <p className="town-county">{titleCase(selection.county)} County</p>
+              {exposure.kind === 'ready' && (
+                <Suspense fallback={<p className="town-status">Loading summary…</p>}>
+                  <ExposureSummary
+                    town={selection.name}
+                    exposure={exposure.result}
+                    restoreFocus={restoreFocus}
+                    onOpenAbout={onOpenAbout}
+                    onRestoredFocus={onRestoredFocus}
+                  />
+                </Suspense>
+              )}
+            </>
+          )}
+
+          <p className="town-about">
+            <button
+              type="button"
+              className="text-button"
+              ref={panelAboutRef}
+              onClick={() => onOpenAbout('panel')}
+            >
+              About the data
+            </button>
+          </p>
         </>
       )}
-
-      <p className="town-about">
-        <button
-          type="button"
-          className="text-button"
-          ref={panelAboutRef}
-          onClick={() => onOpenAbout('panel')}
-        >
-          About the data
-        </button>
-      </p>
     </aside>
   )
 }
