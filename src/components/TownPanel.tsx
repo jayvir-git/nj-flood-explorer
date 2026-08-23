@@ -1,4 +1,5 @@
 import { Suspense, lazy } from 'react'
+import { exposureSummarySentence } from '../exposure'
 import { AboutData } from './AboutData'
 import type { ExposureState, SelectionState, TownOption } from './NjMap'
 
@@ -39,16 +40,10 @@ export function TownPanel({
   }
 
   const selectedCode = selection.kind === 'selected' ? selection.munCode : ''
-  const statusText =
-    selection.kind === 'pending'
-      ? 'Looking up town…'
-      : selection.kind === 'error'
-        ? 'The town-boundary service is not responding.'
-        : exposure.kind === 'pending'
-          ? 'Looking up flood exposure…'
-          : exposure.kind === 'error'
-            ? 'Exposure figures could not be calculated. A data service did not answer.'
-            : ''
+  const townName =
+    selection.kind === 'selected' || selection.kind === 'pending' ? selection.name : undefined
+  const statusText = townStatusText(selection, exposure, townName)
+  const statusIsAnnouncementOnly = exposure.kind === 'ready' && selection.kind === 'selected'
 
   return (
     <aside className="town-panel" aria-label="Town flood exposure">
@@ -69,7 +64,10 @@ export function TownPanel({
         </select>
       </div>
 
-      <div className="town-status" aria-live="polite">
+      <div
+        className={statusIsAnnouncementOnly ? 'town-status sr-only' : 'town-status'}
+        aria-live="polite"
+      >
         {statusText}
       </div>
 
@@ -100,4 +98,28 @@ export function TownPanel({
       </p>
     </aside>
   )
+}
+
+function townStatusText(
+  selection: SelectionState,
+  exposure: ExposureState,
+  townName: string | undefined,
+): string {
+  if (selection.kind === 'error') {
+    return 'The town-boundary service is not responding. Choose another town, or try again.'
+  }
+  if (exposure.kind === 'error') {
+    return 'Exposure figures could not be calculated. A data service did not answer. Choose another town, or try this one again.'
+  }
+  if (exposure.kind === 'ready' && selection.kind === 'selected') {
+    const sentence = exposureSummarySentence(selection.name, exposure.result)
+    if (exposure.result.kind === 'no-overburdened' || exposure.result.kind === 'unmapped') {
+      return `${sentence} Choose another town.`
+    }
+    return sentence
+  }
+  if (townName && (selection.kind === 'pending' || selection.kind === 'selected')) {
+    return `Loading flood exposure summary for ${townName}.`
+  }
+  return ''
 }

@@ -18,7 +18,7 @@ export type FloodStatus =
 
 export type SelectionState =
   | { kind: 'idle' }
-  | { kind: 'pending' }
+  | { kind: 'pending'; name?: string }
   | {
       kind: 'selected'
       name: string
@@ -75,7 +75,10 @@ export function NjMap() {
       setExposure({ kind: 'idle' })
       return
     }
-    setSelection({ kind: 'pending' })
+    setSelection({
+      kind: 'pending',
+      name: towns.find((town) => town.munCode === munCode)?.name,
+    })
     setExposure({ kind: 'idle' })
     try {
       const town = await fetchTownByCode(munCode)
@@ -89,7 +92,7 @@ export function NjMap() {
     } catch {
       setSelection({ kind: 'error' })
     }
-  }, [])
+  }, [towns])
 
   const onSelectionChange = useCallback((next: SelectionState) => {
     setSelection(next)

@@ -9,7 +9,7 @@ import {
   YAxis,
 } from 'recharts'
 import { SOURCES } from '../config/sources'
-import type { CriterionTally, ExposureResult } from '../exposure'
+import { exposureSummarySentence, type CriterionTally, type ExposureResult } from '../exposure'
 
 const AXIS_WIDTH = 130
 
@@ -64,10 +64,7 @@ export function ExposureSummary({ town, exposure, onOpenAbout }: Props) {
   if (exposure.kind === 'no-overburdened') {
     return (
       <section className="exposure">
-        <p className="exposure-summary">
-          NJDEP lists no overburdened communities intersecting {town}, so this app has
-          nothing to report for it.
-        </p>
+        <p className="exposure-summary">{exposureSummarySentence(town, exposure)}</p>
         <Sources onOpenAbout={onOpenAbout} />
       </section>
     )
@@ -77,9 +74,7 @@ export function ExposureSummary({ town, exposure, onOpenAbout }: Props) {
     return (
       <section className="exposure">
         <p className="exposure-summary warning">
-          FEMA&rsquo;s National Flood Hazard Layer publishes no data for any of the{' '}
-          {exposure.blockGroups} overburdened community block group
-          {exposure.blockGroups === 1 ? '' : 's'} intersecting {town}.
+          {exposureSummarySentence(town, exposure)}
         </p>
         <p className="exposure-note">
           No exposure figure can be derived. A blank flood map does not mean the area is
@@ -98,21 +93,7 @@ export function ExposureSummary({ town, exposure, onOpenAbout }: Props) {
 
   return (
     <section className="exposure">
-      <p className="exposure-summary">
-        {unmapped > 0 ? (
-          <>
-            FEMA publishes no flood hazard data for {unmapped} of the {blockGroups}{' '}
-            overburdened community block groups intersecting {town}; of the {mapped} it maps,{' '}
-            {exposed} intersect a Special Flood Hazard Area (high-risk flood zone).
-          </>
-        ) : (
-          <>
-            {exposed} of the {blockGroups} overburdened community block group
-            {blockGroups === 1 ? '' : 's'} intersecting {town} intersect a FEMA Special Flood
-            Hazard Area (high-risk flood zone).
-          </>
-        )}
-      </p>
+      <p className="exposure-summary">{exposureSummarySentence(town, exposure)}</p>
 
       {/* Same numbers as the table below; table is the accessible equivalent. */}
       <div className="exposure-chart" aria-hidden="true">

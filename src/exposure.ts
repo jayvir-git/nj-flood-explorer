@@ -35,6 +35,23 @@ export type ExposureResult =
   | { kind: 'unmapped'; blockGroups: number }
   | Exposure
 
+/** The one-sentence panel verdict; also what the town-status live region announces. */
+export function exposureSummarySentence(town: string, exposure: ExposureResult): string {
+  if (exposure.kind === 'no-overburdened') {
+    return `NJDEP lists no overburdened communities intersecting ${town}, so this app has nothing to report for it.`
+  }
+  if (exposure.kind === 'unmapped') {
+    const noun = exposure.blockGroups === 1 ? 'group' : 'groups'
+    return `FEMA’s National Flood Hazard Layer publishes no data for any of the ${exposure.blockGroups} overburdened community block ${noun} intersecting ${town}.`
+  }
+  const { blockGroups, mapped, exposed, unmapped } = exposure
+  if (unmapped > 0) {
+    return `FEMA publishes no flood hazard data for ${unmapped} of the ${blockGroups} overburdened community block groups intersecting ${town}; of the ${mapped} it maps, ${exposed} intersect a Special Flood Hazard Area (high-risk flood zone).`
+  }
+  const noun = blockGroups === 1 ? 'group' : 'groups'
+  return `${exposed} of the ${blockGroups} overburdened community block ${noun} intersecting ${town} intersect a FEMA Special Flood Hazard Area (high-risk flood zone).`
+}
+
 async function queryAll(run: (start: number) => Promise<FeatureSet>) {
   const features: Graphic[] = []
   for (;;) {
