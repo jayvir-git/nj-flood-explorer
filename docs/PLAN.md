@@ -136,7 +136,7 @@ Accept: first Tab on load reveals a skip link; Enter moves focus to the town sel
 Evidence: first Tab focuses the `.sr-only` skip link and `:focus` unclips it;
 Enter moves focus to `#town-select`.
 
-**A7. Landmark label matches contents.** Done.
+**A7. Landmark label matches contents.** Done. `e797806`
 Accept: the aside's accessible name describes everything inside it.
 Evidence: aside labelled "NJ Flood Exposure Explorer" in every view, matching
 the H1, chooser, summary, and About contents.
