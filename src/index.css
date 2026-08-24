@@ -427,12 +427,16 @@ body,
     right: 8px;
     width: auto;
     max-width: calc(100% - 16px);
-    max-height: none;
-    overflow-y: visible;
+    box-sizing: border-box;
+    max-height: calc(100% - 16px);
+    overflow-y: auto;
   }
 
   .legend-toggle {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
     width: 100%;
     margin: 0;
     padding: 10px 0;
@@ -444,5 +448,10 @@ body,
     color: #222;
     text-align: left;
     cursor: pointer;
+  }
+
+  .legend-toggle-mark {
+    flex: none;
+    font-weight: 400;
   }
 }

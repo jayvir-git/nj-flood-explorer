@@ -450,3 +450,20 @@ narrower than a phone. Sidebar map width is viewport minus 400px, so it only
 matches a ~390px phone once the viewport is about 790px. Column layout
 through 800px covers tablet portrait without taking 1024px landscape away
 from the designed side-by-side chrome. 1280px is unchanged.
+
+## D25. Mobile legend toggle shows +/−; expanded panel is capped to the map
+The "Map layers" button had no visible affordance except `cursor: pointer`, which
+touch devices do not show, and when expanded it read as a 13px heading. Chose a
+`+` / `−` mark in an `aria-hidden` span on the same `<button>`, swapped with
+`aria-expanded`. Rejected: a corner "x" (reads as a modal close, and would be a
+second control); a rotating chevron (needs motion, and we do not animate).
+`aria-expanded` is the state for assistive tech; the glyph is not announced.
+Hit target stays `min-height: 44px`. No colour change.
+
+M2 set mobile `.panel { max-height: none }` until the map had a containing
+height. M3 gave `.map-area` `height: 60vh` and never restored a cap, so the
+~572px legend spilled past the 506px map on every phone. Restored
+`max-height: calc(100% - 16px)` and `overflow-y: auto`, with
+`box-sizing: border-box` so padding is inside the cap. 100% is `.map-area`
+(the 60vh map); 16px is the 8px inset on both ends, matching the base rule's
+`calc(100% - 24px)` at the 12px desktop inset. Desktop rules are unchanged.

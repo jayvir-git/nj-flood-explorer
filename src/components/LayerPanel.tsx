@@ -70,6 +70,9 @@ export function LayerPanel({ visibility, onToggle, floodStatus }: Props) {
         onClick={() => setOpen((current) => !current)}
       >
         Map layers
+        <span className="legend-toggle-mark" aria-hidden="true">
+          {open ? '−' : '+'}
+        </span>
       </button>
       <p className={open ? statusClass : `${statusClass} sr-only`} aria-live="polite">
         {floodMessage ?? ''}
