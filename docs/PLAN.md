@@ -149,11 +149,16 @@ app at 390x844: the answer panel is capped at 307px as an internal scroll box, t
 58% of the screen, and the always-open legend covers 47% of the map. The result inverts the
 product's own answer-first principle on the device where it matters most.
 
-**M1. Let the page scroll on mobile.** Done.
+**M1. Let the page scroll on mobile.** Done. `c9bd2cb`
 Accept: at 390x844 with a town selected, the verdict sentence, chart, table and sources are
 all reachable by scrolling the PAGE, with no inner scroll box and nothing clipped.
 Evidence: Camden at 390x844 — `.town-panel` scrollHeight === clientHeight; summary, chart,
 table, and sources in the document; page scrollHeight 1013 > 844.
+
+**M1b. No horizontal page scroll from panel padding.** Done.
+Accept: at 390x844, documentElement.scrollWidth === clientWidth === 390, and the panel's
+border-box width is 390.
+Evidence: scoped `box-sizing: border-box` on `.town-panel` in the 700px query (D21).
 
 **M2. Collapse the legend behind a disclosure on mobile.** Todo.
 Accept: the legend is closed by default under 700px, opens from a labelled control, and the

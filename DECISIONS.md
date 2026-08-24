@@ -392,3 +392,19 @@ On viewports ≤700px only: `html, body, #root` and `.map-shell` become
 `overflow-y: auto` so it sizes to its content and the PAGE scrolls. Desktop
 rules are unchanged. Rejected: raising `max-height` to a larger percentage
 (the panel's height depends on how many criterion rows the town has).
+
+## D21. Mobile panel uses a scoped border-box, not a global reset (M1b)
+At 390px the panel's `width: 100%` is the content box. Horizontal padding is
+20px + 20px, `box-sizing` is the initial `content-box`, and no sheet sets
+otherwise, so the border box is 430px and the page scrolls sideways by exactly
+that extra 40px.
+
+Chose `box-sizing: border-box` on `.town-panel` inside the existing
+`max-width: 700px` block. That keeps `width: 100%` as the override of the
+desktop 400px width and makes 100% include the padding. Rejected: dropping
+`width: 100%` and relying on flex stretch (`width: auto`) — it still has to
+override the 400px, and the used width then depends on stretch vs content-box
+rather than the arithmetic that was measured. Rejected: a global
+`*, *::before, *::after { box-sizing: border-box }` reset in this pass — it
+would shrink the desktop panel from 440px border-box to 400px. Parked in
+FUTURE.md.

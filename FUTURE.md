@@ -15,3 +15,4 @@ Parking lot. Nothing here is scope. Ideas land here instead of in code.
 - Spanish-language UI
 - Self-rendered basemap attribution from view.attributionItems, to remove the unnamed
   SDK tab stop (see D19).
+- Adopt a global border-box reset, audit desktop after

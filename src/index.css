@@ -408,6 +408,7 @@ body,
   .town-panel {
     order: 1;
     width: 100%;
+    box-sizing: border-box;
     overflow-y: visible;
     border-right: 0;
     border-bottom: 1px solid #d5d5d5;
