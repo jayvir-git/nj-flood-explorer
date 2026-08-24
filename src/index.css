@@ -391,7 +391,8 @@ body,
   font-weight: 600;
 }
 
-@media (max-width: 700px) {
+/* Keep in sync with NARROW_MAX_WIDTH in src/layout.ts. */
+@media (max-width: 800px) {
   html,
   body,
   #root {
@@ -416,8 +417,9 @@ body,
 
   .map-area {
     order: 2;
-    flex: 1;
-    min-height: 52%;
+    flex: none;
+    height: 60vh;
+    min-height: 0;
   }
 
   .panel {

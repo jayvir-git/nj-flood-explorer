@@ -160,7 +160,7 @@ Accept: at 390x844, documentElement.scrollWidth === clientWidth === 390, and the
 border-box width is 390.
 Evidence: scoped `box-sizing: border-box` on `.town-panel` in the 700px query (D21).
 
-**M2. Collapse the legend behind a disclosure on mobile.** Done.
+**M2. Collapse the legend behind a disclosure on mobile.** Done. `4915615`
 Accept: the legend is closed by default under 700px, opens from a labelled control, and the
 map is unobscured on load.
 Evidence: 390x844 — "Map layers" button `aria-expanded="false"` on load, three toggles in a
@@ -168,5 +168,9 @@ Evidence: 390x844 — "Map layers" button `aria-expanded="false"` on load, three
 (sr-only when collapsed). Desktop: no button, `.panel` still the named region. Camden table
 scrollWidth === clientWidth (350); page 390===390.
 
-**M3. Give the map a sensible fixed height on mobile.** Todo.
+**M3. Give the map a sensible fixed height on mobile.** Done.
 Accept: the map is large enough to read and no longer claims the majority of the screen.
+Evidence: stacked `.map-area` is 60vh (390×844 → 506px); legend cover 3% on load.
+Breakpoint raised to 800px (`NARROW_MAX_WIDTH`, D23–D24) so 768×1024 is column not a
+368px sidebar map. Window resize across 800px: button and column appear/disappear
+together; layer toggles never stranded. 360/390/768/1280: scrollWidth === clientWidth.

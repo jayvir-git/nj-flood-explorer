@@ -429,3 +429,24 @@ Also dropped the mobile panel's `left: 8px` / `max-height: 42%`. Those made
 the legend a full-width overlay, and after M1 the percentage max-height is
 42% of a 0px map-area. `max-height: none` until M3 gives the map a containing
 height. No animation.
+
+## D23. Narrow breakpoint is one named constant (M3)
+`NARROW_MAX_WIDTH` in `src/layout.ts` is the source of truth for the stacked
+layout. `LayerPanel` builds its `matchMedia` query from `NARROW_MEDIA`. The
+`index.css` query cannot import the constant, so it repeats the pixel value
+with a comment that names `NARROW_MAX_WIDTH`. Rejected: a CSS custom property
+read back via `getComputedStyle` (layout would still depend on a magic number
+in CSS, and matchMedia would wait on a node); a build step to stamp the
+query (too much machinery for one number).
+
+## D24. Stacked map is 60vh; column layout runs through 800px (M3)
+`.map-area` is `height: 60vh` in the stacked query: enough of the state map
+to read, the middle of the 55–65vh range, and not a percentage of the
+height-locked shell M1 removed. After a town is selected the panel is taller
+than the remaining 40vh, so the first screen is still the answer.
+
+700px left a 768px tablet on desktop rules: a 400px sidebar and 368px of map,
+narrower than a phone. Sidebar map width is viewport minus 400px, so it only
+matches a ~390px phone once the viewport is about 790px. Column layout
+through 800px covers tablet portrait without taking 1024px landscape away
+from the designed side-by-side chrome. 1280px is unchanged.

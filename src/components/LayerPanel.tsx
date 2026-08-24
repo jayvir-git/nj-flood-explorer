@@ -5,6 +5,7 @@ import {
   FLOOD_CLASSES,
   MUNICIPALITY_OUTLINE,
 } from '../legend'
+import { NARROW_MEDIA } from '../layout'
 import type { FloodStatus, LayerKey } from './NjMap'
 
 const FLOOD_MESSAGES: Partial<Record<FloodStatus, string>> = {
@@ -81,10 +82,10 @@ export function LayerPanel({ visibility, onToggle, floodStatus }: Props) {
 }
 
 function useNarrowViewport() {
-  const [narrow, setNarrow] = useState(() => window.matchMedia('(max-width: 700px)').matches)
+  const [narrow, setNarrow] = useState(() => window.matchMedia(NARROW_MEDIA).matches)
 
   useEffect(() => {
-    const query = window.matchMedia('(max-width: 700px)')
+    const query = window.matchMedia(NARROW_MEDIA)
     const update = () => setNarrow(query.matches)
     update()
     query.addEventListener('change', update)
