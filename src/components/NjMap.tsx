@@ -34,8 +34,6 @@ export type ExposureState =
   | { kind: 'ready'; result: ExposureResult }
   | { kind: 'error' }
 
-export type AboutOpener = 'panel' | 'summary'
-
 export type { TownOption }
 
 export function NjMap() {
@@ -48,8 +46,6 @@ export function NjMap() {
   const [selection, setSelection] = useState<SelectionState>({ kind: 'idle' })
   const [exposure, setExposure] = useState<ExposureState>({ kind: 'idle' })
   const [aboutOpen, setAboutOpen] = useState(false)
-  const [aboutOpener, setAboutOpener] = useState<AboutOpener>('panel')
-  const [restoreFocus, setRestoreFocus] = useState<AboutOpener | null>(null)
   const [towns, setTowns] = useState<TownOption[]>([])
   // Start the ArcGIS chunk after the shell's first paint so it does not race FCP.
   const [mapRequested, setMapRequested] = useState(false)
@@ -110,18 +106,12 @@ export function NjMap() {
     setFloodStatus(status)
   }, [])
 
-  const onOpenAbout = useCallback((source: AboutOpener) => {
-    setAboutOpener(source)
+  const onOpenAbout = useCallback(() => {
     setAboutOpen(true)
   }, [])
 
   const onCloseAbout = useCallback(() => {
     setAboutOpen(false)
-    setRestoreFocus(aboutOpener)
-  }, [aboutOpener])
-
-  const onRestoredFocus = useCallback(() => {
-    setRestoreFocus(null)
   }, [])
 
   return (
@@ -156,10 +146,8 @@ export function NjMap() {
         exposure={exposure}
         towns={towns}
         aboutOpen={aboutOpen}
-        restoreFocus={restoreFocus}
         onOpenAbout={onOpenAbout}
         onCloseAbout={onCloseAbout}
-        onRestoredFocus={onRestoredFocus}
         onPickTown={(munCode) => {
           void onPickTown(munCode)
         }}

@@ -1,7 +1,7 @@
 import { Suspense, lazy, useEffect, useRef } from 'react'
 import { exposureSummarySentence } from '../exposure'
 import { AboutData } from './AboutData'
-import type { AboutOpener, ExposureState, SelectionState, TownOption } from './NjMap'
+import type { ExposureState, SelectionState, TownOption } from './NjMap'
 
 const ExposureSummary = lazy(() =>
   import('./ExposureSummary').then((module) => ({ default: module.ExposureSummary })),
@@ -17,10 +17,8 @@ type Props = {
   exposure: ExposureState
   towns: TownOption[]
   aboutOpen: boolean
-  restoreFocus: AboutOpener | null
-  onOpenAbout: (source: AboutOpener) => void
+  onOpenAbout: () => void
   onCloseAbout: () => void
-  onRestoredFocus: () => void
   onPickTown: (munCode: string | null) => void
 }
 
@@ -29,26 +27,19 @@ export function TownPanel({
   exposure,
   towns,
   aboutOpen,
-  restoreFocus,
   onOpenAbout,
   onCloseAbout,
-  onRestoredFocus,
   onPickTown,
 }: Props) {
   const panelAboutRef = useRef<HTMLButtonElement>(null)
+  const wasAboutOpen = useRef(false)
 
   useEffect(() => {
-    if (restoreFocus !== 'panel') return
-    panelAboutRef.current?.focus()
-    onRestoredFocus()
-  }, [restoreFocus, onRestoredFocus])
-
-  useEffect(() => {
-    if (restoreFocus !== 'summary') return
-    if (selection.kind === 'selected' && exposure.kind === 'ready') return
-    panelAboutRef.current?.focus()
-    onRestoredFocus()
-  }, [restoreFocus, selection.kind, exposure.kind, onRestoredFocus])
+    if (wasAboutOpen.current && !aboutOpen) {
+      panelAboutRef.current?.focus()
+    }
+    wasAboutOpen.current = aboutOpen
+  }, [aboutOpen])
 
   const selectedCode = selection.kind === 'selected' ? selection.munCode : ''
   const townName =
@@ -97,13 +88,7 @@ export function TownPanel({
               <p className="town-county">{titleCase(selection.county)} County</p>
               {exposure.kind === 'ready' && (
                 <Suspense fallback={<p className="town-status">Loading summary…</p>}>
-                  <ExposureSummary
-                    town={selection.name}
-                    exposure={exposure.result}
-                    restoreFocus={restoreFocus}
-                    onOpenAbout={onOpenAbout}
-                    onRestoredFocus={onRestoredFocus}
-                  />
+                  <ExposureSummary town={selection.name} exposure={exposure.result} />
                 </Suspense>
               )}
             </>
@@ -114,7 +99,7 @@ export function TownPanel({
               type="button"
               className="text-button"
               ref={panelAboutRef}
-              onClick={() => onOpenAbout('panel')}
+              onClick={onOpenAbout}
             >
               About the data
             </button>

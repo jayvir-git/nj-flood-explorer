@@ -467,3 +467,18 @@ height. M3 gave `.map-area` `height: 60vh` and never restored a cap, so the
 `box-sizing: border-box` so padding is inside the cap. 100% is `.map-area`
 (the 60vh map); 16px is the 8px inset on both ends, matching the base rule's
 `calc(100% - 24px)` at the 12px desktop inset. Desktop rules are unchanged.
+
+## D26. One "About the data" control, at the panel footer
+With a town selected the same label appeared twice: in `Sources()` next to the
+three source links, and in the persistent `.town-about` footer. Two buttons
+with the same accessible name in one view.
+
+Kept the footer button. It is present in every panel state, so its location
+can be learned, and the Sources line already names each dataset with a direct
+link. Rejected: keeping the control in `Sources()` because that is where the
+provenance question arises — it would compete with those links and leave the
+idle/loading panel without an About entry, or keep both.
+
+With one trigger, `AboutOpener`, `aboutOpener`, `restoreFocus`, and
+`onRestoredFocus` go away. Closing About restores focus by watching
+`aboutOpen` fall, onto `panelAboutRef` (A2).
