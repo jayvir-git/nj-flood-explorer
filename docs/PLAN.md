@@ -168,7 +168,7 @@ Evidence: 390x844 — "Map layers" button `aria-expanded="false"` on load, three
 (sr-only when collapsed). Desktop: no button, `.panel` still the named region. Camden table
 scrollWidth === clientWidth (350); page 390===390.
 
-**M3. Give the map a sensible fixed height on mobile.** Done.
+**M3. Give the map a sensible fixed height on mobile.** Done. `5d1e3ca`
 Accept: the map is large enough to read and no longer claims the majority of the screen.
 Evidence: stacked `.map-area` is 60vh (390×844 → 506px); legend cover 3% on load.
 Breakpoint raised to 800px (`NARROW_MAX_WIDTH`, D23–D24) so 768×1024 is column not a
