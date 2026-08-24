@@ -175,6 +175,6 @@ Breakpoint raised to 800px (`NARROW_MAX_WIDTH`, D23–D24) so 768×1024 is colum
 368px sidebar map. Window resize across 800px: button and column appear/disappear
 together; layer toggles never stranded. 360/390/768/1280: scrollWidth === clientWidth.
 
-**D-1 / D-2. Mobile legend affordance and cap.** Done.
+**D-1 / D-2. Mobile legend affordance and cap.** Done. `3680924`
 Evidence: same "Map layers" button shows + collapsed and − expanded (`aria-hidden` mark);
 expanded `.panel` `max-height: calc(100% - 16px)` `overflow-y: auto` stays inside the map.
