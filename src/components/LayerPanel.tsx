@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import {
   EJ_CRITERIA,
   EJ_LEGEND_GROUPS,
@@ -28,10 +28,83 @@ type Props = {
 }
 
 export function LayerPanel({ visibility, onToggle, floodStatus }: Props) {
+  const narrow = useNarrowViewport()
+  const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    if (!narrow) setOpen(false)
+  }, [narrow])
+
   const floodMessage = FLOOD_MESSAGES[floodStatus]
+  const statusClass = FLOOD_WARNINGS.has(floodStatus) ? 'status warning' : 'status'
+  const layers = (
+    <LegendLayers
+      visibility={visibility}
+      onToggle={onToggle}
+      status={
+        narrow ? null : (
+          <p className={statusClass} aria-live="polite">
+            {floodMessage ?? ''}
+          </p>
+        )
+      }
+    />
+  )
+
+  if (!narrow) {
+    return (
+      <div className="panel" role="region" aria-label="Map layers">
+        {layers}
+      </div>
+    )
+  }
 
   return (
-    <div className="panel" role="region" aria-label="Map layers">
+    <div className="panel">
+      <button
+        type="button"
+        className="legend-toggle"
+        aria-expanded={open}
+        aria-controls="map-layers"
+        onClick={() => setOpen((current) => !current)}
+      >
+        Map layers
+      </button>
+      <p className={open ? statusClass : `${statusClass} sr-only`} aria-live="polite">
+        {floodMessage ?? ''}
+      </p>
+      <div id="map-layers" role="region" aria-label="Map layers" hidden={!open}>
+        {layers}
+      </div>
+    </div>
+  )
+}
+
+function useNarrowViewport() {
+  const [narrow, setNarrow] = useState(() => window.matchMedia('(max-width: 700px)').matches)
+
+  useEffect(() => {
+    const query = window.matchMedia('(max-width: 700px)')
+    const update = () => setNarrow(query.matches)
+    update()
+    query.addEventListener('change', update)
+    return () => query.removeEventListener('change', update)
+  }, [])
+
+  return narrow
+}
+
+function LegendLayers({
+  visibility,
+  onToggle,
+  status,
+}: {
+  visibility: Record<LayerKey, boolean>
+  onToggle: (key: LayerKey) => void
+  status: ReactNode
+}) {
+  return (
+    <>
       <LayerToggle
         label="Flood hazard zones"
         checked={visibility.flood}
@@ -45,12 +118,7 @@ export function LayerPanel({ visibility, onToggle, floodStatus }: Props) {
             </li>
           ))}
         </ul>
-        <p
-          className={FLOOD_WARNINGS.has(floodStatus) ? 'status warning' : 'status'}
-          aria-live="polite"
-        >
-          {floodMessage ?? ''}
-        </p>
+        {status}
       </LayerToggle>
 
       <LayerToggle
@@ -88,7 +156,7 @@ export function LayerPanel({ visibility, onToggle, floodStatus }: Props) {
           </li>
         </ul>
       </LayerToggle>
-    </div>
+    </>
   )
 }
 

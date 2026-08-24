@@ -423,8 +423,24 @@ body,
   .panel {
     top: 8px;
     right: 8px;
-    left: 8px;
     width: auto;
-    max-height: 42%;
+    max-width: calc(100% - 16px);
+    max-height: none;
+    overflow-y: visible;
+  }
+
+  .legend-toggle {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 10px 0;
+    min-height: 44px;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-weight: 600;
+    color: #222;
+    text-align: left;
+    cursor: pointer;
   }
 }

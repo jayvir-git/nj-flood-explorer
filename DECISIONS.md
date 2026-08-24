@@ -408,3 +408,24 @@ rather than the arithmetic that was measured. Rejected: a global
 `*, *::before, *::after { box-sizing: border-box }` reset in this pass — it
 would shrink the desktop panel from 440px border-box to 400px. Parked in
 FUTURE.md.
+
+## D22. Mobile legend is a button disclosure; zoom status stays mounted (M2)
+Chose a real `<button>` plus `window.matchMedia('(max-width: 700px)')` over
+`<details>`/`<summary>`. Desktop must keep the always-open legend with no
+trigger; `details` always exposes a summary control unless we hide it with
+CSS, which is a second interaction model. On a narrow viewport the button
+starts at `aria-expanded="false"` and `aria-controls` the region; the region
+keeps `role="region"` `aria-label="Map layers"` and is `hidden` while
+collapsed so the three layer checkboxes leave the tab order. Desktop renders
+the original `.panel` region and no button.
+
+The `.status` live region is about the map, not the legend. Chose (a): hoist
+it out of the collapsible region on mobile so it stays mounted in both
+states. While collapsed it uses `.sr-only` so the long zoom-in sentence does
+not become a second overlay; it is visible when the legend is open. Desktop
+keeps the live region inside the flood-layer block, as today.
+
+Also dropped the mobile panel's `left: 8px` / `max-height: 42%`. Those made
+the legend a full-width overlay, and after M1 the percentage max-height is
+42% of a 0px map-area. `max-height: none` until M3 gives the map a containing
+height. No animation.
