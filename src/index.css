@@ -392,14 +392,23 @@ body,
 }
 
 @media (max-width: 700px) {
+  html,
+  body,
+  #root {
+    height: auto;
+    min-height: 100%;
+  }
+
   .map-shell {
     flex-direction: column;
+    height: auto;
+    min-height: 100%;
   }
 
   .town-panel {
     order: 1;
     width: 100%;
-    max-height: 48%;
+    overflow-y: visible;
     border-right: 0;
     border-bottom: 1px solid #d5d5d5;
   }

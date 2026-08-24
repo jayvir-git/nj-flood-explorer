@@ -140,3 +140,24 @@ Enter moves focus to `#town-select`.
 Accept: the aside's accessible name describes everything inside it.
 Evidence: aside labelled "NJ Flood Exposure Explorer" in every view, matching
 the H1, chooser, summary, and About contents.
+
+## Phase 6: mobile layout pass (2026-08-24)
+
+P2 lists "mobile layout" as part of the UX/accessibility pass and marks it Done. As with the
+Lighthouse 100 in Phase 5, the pass ran and left real defects standing. Measured on the live
+app at 390x844: the answer panel is capped at 307px as an internal scroll box, the map takes
+58% of the screen, and the always-open legend covers 47% of the map. The result inverts the
+product's own answer-first principle on the device where it matters most.
+
+**M1. Let the page scroll on mobile.** Done.
+Accept: at 390x844 with a town selected, the verdict sentence, chart, table and sources are
+all reachable by scrolling the PAGE, with no inner scroll box and nothing clipped.
+Evidence: Camden at 390x844 — `.town-panel` scrollHeight === clientHeight; summary, chart,
+table, and sources in the document; page scrollHeight 1013 > 844.
+
+**M2. Collapse the legend behind a disclosure on mobile.** Todo.
+Accept: the legend is closed by default under 700px, opens from a labelled control, and the
+map is unobscured on load.
+
+**M3. Give the map a sensible fixed height on mobile.** Todo.
+Accept: the map is large enough to read and no longer claims the majority of the screen.

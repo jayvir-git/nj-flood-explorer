@@ -379,3 +379,16 @@ tab stop that has visible text and is announced by most screen readers.
 Also rejected: `querySelector` / setting `tabIndex` or `aria-label` on SDK DOM
 (monkey-patch; breaks on the next upgrade); forking or patching
 `@arcgis/core`. Recorded as a third-party limitation. Parked in FUTURE.md.
+
+## D20. Mobile height lock is the html/body/#root/shell chain (M1)
+The inner scroll box on `.town-panel` was not just `max-height: 48%`. That cap
+only existed because `.map-shell` is `height: 100%` / `min-height: 100%` and
+`html, body, #root` are also `height: 100%`, so the document cannot grow and
+the panel has to clip. Unlocking only the shell would still leave the page
+inside a viewport-tall `#root`.
+
+On viewports ≤700px only: `html, body, #root` and `.map-shell` become
+`height: auto; min-height: 100%`, and the panel drops `max-height` and
+`overflow-y: auto` so it sizes to its content and the PAGE scrolls. Desktop
+rules are unchanged. Rejected: raising `max-height` to a larger percentage
+(the panel's height depends on how many criterion rows the town has).
